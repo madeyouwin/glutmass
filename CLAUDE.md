@@ -26,7 +26,7 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 - `prototype/index.html`: ursprünglicher Klick-Prototyp, nur noch als Referenz.
 - Design „Variante A · Grillabend“ (21.10.2026): Seite in drei Bereichen auf Kohle-Hintergrund mit Glut-Kreis oben rechts: 1. eigener Kopf (Wortmarke hell, Maßband bündig, Claim darunter, Navigation als Pillen rechts), 2. eigener Food-Waste-Bereich in Kraut „Kauf, was gegessen wird.“ mit kurzer Erklärung und drei Fakten (74,5 kg BMLEH, 250 g statt 400 g, Stück statt Gramm), 3. heller Teller mit dem Rechner. Schritte 1 Gäste · 2 Die Runde · 3 Auf den Grill; alle Gäste starten bei 0. „Die Runde“: Auswahl auf dem Handy über die volle Breite. Einkaufsliste im Prototyp-Stil (cremefarbene Karte, Lochkante oben, große Stückzahlen). Keine feste Leiste am unteren Rand (von Marc abgelehnt).
 - Safari: Kein Grid/Flex direkt auf `<fieldset>`, Layout immer in einem inneren Container. Klasse `.stepnum` für die Schritt-Kreise, `.num` nur für Zahlenspalten in Tabellen.
-- Food Waste: schmales grünes Band nur mit dem Satz „Kauf, was gegessen wird.“ (Marc: nicht überladen). Im Kaufzettel Vergleichsbalken Faustregel/GLUTMASS mit gemeinsamem Zähler darunter, aufklappbarer Reste-Plan je Artikel. Später: Teilen-Karte als Bild, Reste-Check am Tag danach.
+- Food Waste: eigener grüner Bereich unter dem Kopf (siehe oben). Im Kaufzettel Vergleichsbalken Faustregel/GLUTMASS mit gemeinsamem Zähler darunter, aufklappbarer Reste-Plan je Artikel. Später: Teilen-Karte als Bild, Reste-Check am Tag danach.
 
 ## Rechenlogik (von Marc bestätigt, Okt. 2026)
 
