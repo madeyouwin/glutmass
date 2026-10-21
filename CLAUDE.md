@@ -24,6 +24,8 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 - `vercel.json`: statische Ausgabe aus `public/`, Function-Region fra1, Sicherheits-Header (CSP usw.) und Caching.
 - `.github/workflows/tests.yml`: nur Tests. Veröffentlicht wird über die Vercel-GitHub-Integration bei jedem Push auf `main`.
 - `prototype/index.html`: ursprünglicher Klick-Prototyp, nur noch als Referenz.
+- Design „Variante B · Theken-Rahmen“ (21.10.2026, Figma-Datei „GLUTMASS – Design-Vorschläge Rechner“): App im 4-px-Kohle-Rahmen mit runden Ecken, Kopf und Fuß als dunkle Bänder, nummerierte Schritte 1 Gäste · 2 Die Runde · 3 Auf den Grill, Auswahl mit schwarzem Rand. Kompakt: Gäste in drei Spalten, Hunger/Anlass/Beilagen als Zeilen in einem Schritt.
+- Food Waste sichtbar: grünes Band „Kauf, was gegessen wird.“ mit BMLEH-Zahl und gemeinsamem Zähler, Vergleichsbalken Faustregel/GLUTMASS im Zettel, aufklappbarer Reste-Plan je Artikel, feste Ergebnis-Leiste mobil (−kg, Preis, Sprung zur Liste; blendet sich aus, sobald der Zettel sichtbar ist). Später: Teilen-Karte als Bild, Reste-Check am Tag danach.
 
 ## Rechenlogik (von Marc bestätigt, Okt. 2026)
 

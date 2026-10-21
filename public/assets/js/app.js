@@ -4,6 +4,7 @@ import {
   fmtKg, fmtEur, sideAmount, shareText,
 } from "./calc.js?v=1";
 
+
 const CFG_KEY = "glutmass-annahmen";      // localStorage, nur wenn eigene Annahmen gesetzt sind
 const COUNTED_KEY = "glutmass-gezaehlt";  // sessionStorage, Sperre gegen Mehrfachzaehlung
 const COUNTER_URL = "/api/zaehler";
@@ -17,6 +18,18 @@ const BASE_INFO = {
   salad: ["Salat pro Person (g)", "angepasst an die Beilagen-Wahl"],
   sauce: ["Saucen & Dips pro Person (ml)", ""],
 };
+// Reste-Tipps je Artikel: erscheinen nur fuer Artikel, die auf der Liste stehen.
+const LEFTOVERS = {
+  wurst: "Am nächsten Tag in Scheiben in die Pfanne – als Bratkartoffeln oder Currywurst.",
+  nacken: "Dünn aufschneiden: für Wraps oder die Brotzeit.",
+  haehnchen: "Kalt in den Salat oder ins Sandwich.",
+  rumpsteak: "Hauchdünn aufschneiden – Steak-Sandwich oder Salat.",
+  bauch: "Klein schneiden und mit Bratkartoffeln oder Bohnen anbraten.",
+  grillkaese: "Gewürfelt in den Salat oder mit Gemüse in die Pfanne.",
+  gemuese: "Kalt in den Nudelsalat oder als Ofengemüse aufwärmen.",
+};
+const LEFTOVER_ALL = ["Alles Gegrillte", "Schnell abkühlen lassen, in den Kühlschrank und in 1–2 Tagen essen – oder einfrieren."];
+
 const WARNINGS = {
   "adults-no-meat": "Kein Fleisch gewählt – wähle oben mindestens einen Artikel.",
   "kids-no-meat": "Für die Kinder ist kein Fleisch gewählt.",
@@ -110,19 +123,49 @@ function update() {
   );
   $("price").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "–";
 
-  const waste = $("waste");
-  waste.replaceChildren();
-  if (r.lessGrams) {
-    waste.append(el("b", null, `${fmtKg(r.lessGrams)} weniger`),
-      el("p", null, `eingekauft als nach der 400-g-Faustregel. Das sind rund ${fmtEur(r.lessEuro)} weniger an der Theke.`));
-  } else if (r.grillGrams) {
-    waste.append(el("b", null, "Passt."),
-      el("p", null, "Bei so viel Hunger liegt die Liste auf Höhe der Faustregel. Reste lassen sich gut einfrieren."));
-  }
+  renderWaste(r);
+  renderLeftovers(r);
+  renderSticky(r);
 
   $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(shareText(r));
   $("summary").textContent = g.total ? `Liste aktualisiert: ${r.lines.length} Grillartikel für ${g.total} Gäste.` : "";
   renderSteppers();
+}
+
+function renderWaste(r) {
+  const box = $("waste");
+  box.hidden = !(r.grillGrams && r.ruleGrams);
+  if (box.hidden) return;
+  const max = Math.max(r.ruleGrams, r.grillGrams);
+  // Angezeigte Werte so runden, dass Faustregel − GLUTMASS genau die ausgewiesene Ersparnis ergibt.
+  const ours = r.lessGrams ? r.ruleGrams - Math.round(r.lessGrams / 100) * 100 : r.grillGrams;
+  $("kgRule").textContent = fmtKg(r.ruleGrams);
+  $("kgOurs").textContent = fmtKg(ours);
+  $("barRule").style.width = `${(r.ruleGrams / max) * 100}%`;
+  $("barOurs").style.width = `${(r.grillGrams / max) * 100}%`;
+  if (r.lessGrams) {
+    $("lessKg").textContent = `${fmtKg(r.lessGrams)} weniger`;
+    $("lessText").textContent = `eingekauft · rund ${fmtEur(r.lessEuro)} weniger an der Theke`;
+  } else {
+    $("lessKg").textContent = "Passt.";
+    $("lessText").textContent = "Bei so viel Hunger liegt die Liste auf Höhe der Faustregel.";
+  }
+}
+
+function renderLeftovers(r) {
+  const box = $("reste");
+  const rows = r.lines.filter((l) => LEFTOVERS[l.id]).map((l) => [l.name, LEFTOVERS[l.id]]);
+  box.hidden = !rows.length;
+  if (box.hidden) return;
+  $("resteList").replaceChildren(...[...rows, LEFTOVER_ALL].flatMap(([k, v]) => [el("dt", null, k), el("dd", null, v)]));
+}
+
+function renderSticky(r) {
+  const g = r.guests;
+  const pieces = r.lines.reduce((n, l) => n + l.count, 0);
+  $("stickyLess").textContent = r.lessGrams ? `−${fmtKg(r.lessGrams)}` : "";
+  $("stickyMeta").textContent = g.total ? `${g.total} ${g.total === 1 ? "Gast" : "Gäste"} · ${pieces} Teile vom Grill` : "Wer kommt?";
+  $("stickyPrice").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "–";
 }
 
 function toast(id, msg) {
@@ -151,19 +194,12 @@ async function copyText(text) {
 
 // --- Gemeinsamer Zaehler ---------------------------------------------------
 function showCounter(data) {
-  const c = $("counter");
-  c.replaceChildren("Gemeinsamer Zähler: ");
-  if (!data) {
-    c.append(el("strong", null, "gerade nicht erreichbar"), ".");
-  } else if (!data.listen) {
-    c.append(el("strong", null, "startet mit deiner Liste"), ". Er addiert nur, wie viel weniger auf geteilten Listen steht – ohne Personendaten.");
-  } else {
-    c.append(el("strong", null, `${fmtKg(data.gramm)} weniger`),
-      ` auf ${data.listen.toLocaleString("de-DE")} ${data.listen === 1 ? "geteilten Einkaufsliste" : "geteilten Einkaufslisten"} als nach der Faustregel. `);
-    const a = el("a", null, "Wie wir zählen");
-    a.href = "/so-rechnen-wir.html#zaehler";
-    c.append(a);
-  }
+  const kg = $("counterKg"), note = $("counterNote");
+  if (!data) { kg.textContent = "–"; note.textContent = "Zähler gerade aus"; return; }
+  if (!data.listen) { kg.textContent = "0 kg"; note.textContent = "Start mit deiner Liste"; return; }
+  kg.textContent = fmtKg(data.gramm).replace(",0 kg", " kg");
+  note.textContent = `weniger auf ${data.listen.toLocaleString("de-DE")} ${data.listen === 1 ? "Liste" : "Listen"}`;
+  $("counter").setAttribute("aria-label", `Gemeinsamer Zähler: ${fmtKg(data.gramm)} weniger eingekauft auf ${data.listen} geteilten Listen. Wie wir zählen.`);
 }
 
 async function loadCounter() {
@@ -261,3 +297,9 @@ renderChips();
 renderConfig();
 update();
 loadCounter();
+
+// Ergebnis-Leiste nur zeigen, solange der Einkaufszettel nicht im Bild ist.
+const sticky = $("sticky");
+if ("IntersectionObserver" in window) {
+  new IntersectionObserver(([e]) => sticky.classList.toggle("off", e.isIntersecting), { threshold: 0.15 }).observe($("liste"));
+}
