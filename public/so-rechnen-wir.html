@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>So rechnen wir – GLUTMASS</title>
+<meta name="description" content="Die offene Methode hinter dem GLUTMASS-Grillrechner: Grundmengen, Faktoren, Stückgewichte, die 400-g-Faustregel als Vergleich und wie der gemeinsame Zähler funktioniert.">
+<link rel="canonical" href="https://glutmass.de/so-rechnen-wir.html">
+<meta name="theme-color" content="#171412">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=1">
+</head>
+<body>
+<a class="skip" href="#inhalt">Zum Inhalt springen</a>
+<div class="wrap">
+<header class="top">
+  <a class="brand" href="/" aria-label="GLUTMASS Startseite">
+    <p class="logo">GLUT<span>MASS</span></p>
+    <div class="ruler" aria-hidden="true"></div>
+  </a>
+  <div class="top-r">
+    <p class="claim">Richtig rechnen. Satt grillen.</p>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="/">Rechner</a>
+      <a href="/so-rechnen-wir.html" aria-current="page">So rechnen wir</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Zahlen mit data-wert werden von tests/methode.test.mjs gegen calc.js geprueft. -->
+<main id="inhalt" class="prose">
+<h1>So rechnen wir</h1>
+<p>GLUTMASS rechnet komplett in deinem Browser. Hier steht offen, mit welchen Werten – damit du jede Zahl auf deinem Zettel nachvollziehen kannst. Alle Werte sind Erfahrungs- und Richtwerte aus der Praxis an der Fleischtheke, keine wissenschaftlichen Messwerte.</p>
+
+<h2>1. Grundmenge pro Person</h2>
+<div class="tw"><table>
+  <thead><tr><th scope="col">Wer</th><th scope="col" class="num">Menge</th><th scope="col">Was</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Erwachsene mit Fleisch</th><td class="num"><span data-wert="base.adult">250</span> g</td><td>Fleisch roh, bei normalem Hunger, Party und normalen Beilagen</td></tr>
+    <tr><th scope="row">Kinder bis 12</th><td class="num"><span data-wert="base.kid">120</span> g</td><td>Bratwurst und Hähnchenspieß im Verhältnis <span data-wert="items.wurst.kidShare">70</span> : <span data-wert="items.haehnchen.kidShare">30</span></td></tr>
+    <tr><th scope="row">Vegetarier</th><td class="num"><span data-wert="base.vegP">250</span> g</td><td>Grillkäse und Gemüsespieß je zur Hälfte</td></tr>
+  </tbody>
+</table></div>
+<p>Sind Bratwurst oder Hähnchen nicht ausgewählt, bekommen die Kinder das, was gewählt ist.</p>
+
+<h2>2. Faktoren</h2>
+<p>Die Grundmenge wird mit drei Faktoren multipliziert. Bei Kindern zählen nur Hunger und Anlass.</p>
+<div class="tw"><table>
+  <thead><tr><th scope="col">Faktor</th><th scope="col" class="num">Wenig / kurz</th><th scope="col" class="num">Normal</th><th scope="col" class="num">Viel / lang</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Hunger</th><td class="num"><span data-wert="factors.hunger.wenig">0,8</span></td><td class="num"><span data-wert="factors.hunger.normal">1</span></td><td class="num"><span data-wert="factors.hunger.gross">1,25</span></td></tr>
+    <tr><th scope="row">Anlass (Feierabend / Party / Ganztags)</th><td class="num"><span data-wert="factors.anlass.feierabend">0,85</span></td><td class="num"><span data-wert="factors.anlass.party">1</span></td><td class="num"><span data-wert="factors.anlass.ganztags">1,3</span></td></tr>
+    <tr><th scope="row">Beilagen (wenig / normal / viel)</th><td class="num"><span data-wert="factors.beilagen.wenig">1,12</span></td><td class="num"><span data-wert="factors.beilagen.normal">1</span></td><td class="num"><span data-wert="factors.beilagen.viel">0,85</span></td></tr>
+  </tbody>
+</table></div>
+<p>Wer viele Beilagen hat, isst weniger Fleisch – und umgekehrt.</p>
+
+<h2>3. Vom Gewicht zum Stück</h2>
+<p>Die Fleischmenge wird nach Anteilen auf die Artikel verteilt, die du auswählst. Wählst du nur einen Teil, werden die Anteile auf diese Artikel hochgerechnet.</p>
+<p class="formula">Stückzahl = Gewicht ÷ Stückgewicht, gerundet, mindestens 1</p>
+<div class="tw"><table>
+  <thead><tr><th scope="col">Artikel</th><th scope="col" class="num">Stückgewicht</th><th scope="col" class="num">Anteil</th><th scope="col" class="num">Richtpreis</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Bratwurst</th><td class="num"><span data-wert="items.wurst.piece">100</span> g</td><td class="num"><span data-wert="items.wurst.share">35</span></td><td class="num"><span data-wert="items.wurst.price">9</span> €/kg</td></tr>
+    <tr><th scope="row">Nackensteak</th><td class="num"><span data-wert="items.nacken.piece">200</span> g</td><td class="num"><span data-wert="items.nacken.share">30</span></td><td class="num"><span data-wert="items.nacken.price">10</span> €/kg</td></tr>
+    <tr><th scope="row">Hähnchenspieß</th><td class="num"><span data-wert="items.haehnchen.piece">150</span> g</td><td class="num"><span data-wert="items.haehnchen.share">20</span></td><td class="num"><span data-wert="items.haehnchen.price">14</span> €/kg</td></tr>
+    <tr><th scope="row">Rumpsteak</th><td class="num"><span data-wert="items.rumpsteak.piece">250</span> g</td><td class="num"><span data-wert="items.rumpsteak.share">15</span></td><td class="num"><span data-wert="items.rumpsteak.price">29</span> €/kg</td></tr>
+    <tr><th scope="row">Bauchscheiben</th><td class="num"><span data-wert="items.bauch.piece">120</span> g</td><td class="num"><span data-wert="items.bauch.share">15</span></td><td class="num"><span data-wert="items.bauch.price">9</span> €/kg</td></tr>
+    <tr><th scope="row">Grillkäse</th><td class="num"><span data-wert="items.grillkaese.piece">100</span> g</td><td class="num"><span data-wert="items.grillkaese.share">50</span></td><td class="num"><span data-wert="items.grillkaese.price">17</span> €/kg</td></tr>
+    <tr><th scope="row">Gemüsespieß</th><td class="num"><span data-wert="items.gemuese.piece">150</span> g</td><td class="num"><span data-wert="items.gemuese.share">50</span></td><td class="num"><span data-wert="items.gemuese.price">6</span> €/kg</td></tr>
+  </tbody>
+</table></div>
+<p>Die Preise sind grobe Richtwerte für den Einkauf an der Theke. Je nach Region, Qualität und Angebot zahlst du mehr oder weniger.</p>
+
+<h2>4. Beilagen</h2>
+<ul>
+  <li><span data-wert="base.bread">1,5</span> Brötchen pro Erwachsenem, <span data-wert="base.breadKid">1</span> pro Kind (aufgerundet)</li>
+  <li><span data-wert="base.salad">150</span> g Salat pro Person, auf 100 g gerundet – bei „wenig Beilagen“ × <span data-wert="saladFactor.wenig">0,7</span>, bei „viel“ × <span data-wert="saladFactor.viel">1,35</span></li>
+  <li><span data-wert="base.sauce">50</span> ml Saucen und Dips pro Person</li>
+</ul>
+
+<h2>5. Der Vergleich: „weniger eingekauft“</h2>
+<p>Viele planen nach der Faustregel „400 g Fleisch pro Person“. Wir vergleichen deine Liste mit dieser Faustregel:</p>
+<ul>
+  <li><span data-wert="rule.adult">400</span> g pro Erwachsenem mit Fleisch</li>
+  <li><span data-wert="rule.kid">150</span> g pro Kind</li>
+  <li>75 % davon (<span data-wert="rule.vegGrams">300</span> g) pro Vegetarier</li>
+</ul>
+<p class="formula">weniger eingekauft = Faustregel − Grillgut auf deiner Liste</p>
+<p>Gezählt wird das tatsächliche Gewicht nach dem Runden auf ganze Stücke. Liegt der Unterschied unter 100 g oder deine Liste über der Faustregel, zeigen wir keinen Unterschied an. Der Euro-Betrag ist der Unterschied in Kilo mal dem Durchschnittspreis deiner Liste.</p>
+<p class="note">Was wir <strong>nicht</strong> behaupten: Wir rechnen keine CO₂-Werte und keine Umweltwirkung aus. Wir wissen nicht, was du am Ende wirklich kaufst oder wegwirfst. Die Zahl sagt nur, wie viel weniger auf deiner Liste steht als nach der Faustregel.</p>
+
+<h2 id="zaehler">6. Der gemeinsame Zähler</h2>
+<p>Wenn du deine Liste kopierst oder per WhatsApp teilst, schickt der Rechner genau eine Zahl an unseren Server: die Gramm „weniger eingekauft“ dieser Liste. Der Server addiert sie zu einer Gesamtsumme und zählt die Listen mit.</p>
+<ul>
+  <li>Keine Personendaten, keine IP-Adresse, keine Gästezahlen, keine Cookies.</li>
+  <li>Pro Browser-Sitzung wird höchstens eine Liste gezählt.</li>
+  <li>Listen mit eigenen Annahmen zählen nicht mit.</li>
+  <li>Pro Liste zählen höchstens 50 kg, und der Server nimmt nur eine begrenzte Zahl von Listen pro Minute an.</li>
+</ul>
+<p>Der Zähler zeigt also: So viel weniger stand auf geteilten Einkaufslisten als nach der Faustregel. Nicht mehr und nicht weniger.</p>
+
+<h2>Warum das Ganze?</h2>
+<p>Private Haushalte in Deutschland werfen laut Bundesministerium für Landwirtschaft, Ernährung und Heimat rund 74,5 kg Lebensmittel pro Kopf und Jahr weg – 58 % aller Lebensmittelabfälle (Bezugsjahr 2022). Wer passend einkauft, hat weniger übrig. GLUTMASS soll dabei helfen, ohne dass jemand hungrig nach Hause geht.</p>
+
+<h2>Fehler gefunden?</h2>
+<p>Du stehst selbst an der Theke oder grillst seit Jahren und siehst es anders? Schreib uns: <a href="mailto:kontakt@glutmass.de">kontakt@glutmass.de</a>. Wir passen die Werte an und dokumentieren das hier.</p>
+<p class="muted">Stand der Methode: Oktober 2026.</p>
+</main>
+
+<footer>
+  <p>Alles wird direkt in deinem Browser gerechnet. Keine Cookies, kein Tracking. Ein privates Projekt ohne Werbung.</p>
+  <nav aria-label="Rechtliches">
+    <a href="/so-rechnen-wir.html">So rechnen wir</a>
+    <a href="/datenschutz.html">Datenschutz</a>
+    <a href="mailto:kontakt@glutmass.de">Kontakt</a>
+  </nav>
+</footer>
+</div>
+</body>
+</html>

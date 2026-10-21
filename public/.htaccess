@@ -1,0 +1,42 @@
+# GLUTMASS – Apache-Konfiguration fuer den Strato-Webspace
+
+ErrorDocument 404 /404.html
+Options -Indexes
+AddDefaultCharset utf-8
+AddType font/woff2 .woff2
+AddType application/javascript .js
+
+# HTTPS-Weiterleitung: am besten im Strato-Kundenbereich aktivieren (SSL-Verwaltung).
+# Falls dort nicht moeglich, die folgenden Zeilen einkommentieren und testen:
+# RewriteEngine On
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  Header always set X-Frame-Options "DENY"
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 0 seconds"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 week"
+  # CSS/JS werden ueber ?v=N in den HTML-Dateien versioniert
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# Repo-Dateien nie ausliefern
+<FilesMatch "(^\.|\.(md|json)$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>

@@ -1,0 +1,9 @@
+{
+  "name": "glutmass",
+  "private": true,
+  "type": "module",
+  "description": "Grillgut-Rechner für glutmass.de",
+  "scripts": {
+    "test": "node --test"
+  }
+}

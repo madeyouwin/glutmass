@@ -1,0 +1,70 @@
+name: Test und Deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Rechenlogik testen
+        run: node --test
+      - name: PHP-Syntax pruefen
+        run: php -l public/api/zaehler.php
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    concurrency: deploy-strato
+    steps:
+      - uses: actions/checkout@v4
+
+      # Zugangsdaten traegt Marc unter Settings > Secrets and variables > Actions ein:
+      # SFTP_HOST (z. B. ssh.strato.de), SFTP_USER, SFTP_PASSWORD, SFTP_PATH (Zielordner, z. B. /)
+      - name: Secrets pruefen
+        id: secrets
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          SFTP_PATH: ${{ secrets.SFTP_PATH }}
+        run: |
+          if [ -z "$SFTP_HOST" ] || [ -z "$SFTP_USER" ] || [ -z "$SFTP_PASSWORD" ] || [ -z "$SFTP_PATH" ]; then
+            echo "::warning::SFTP-Secrets fehlen – Deployment uebersprungen."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: lftp installieren
+        if: steps.secrets.outputs.ready == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      # Laedt public/ hoch. Ohne --delete: auf dem Server wird nichts geloescht.
+      # Die Zaehlerdatei api/data/zaehler.json liegt nur auf dem Server und wird nie ueberschrieben.
+      - name: Per SFTP hochladen
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          LFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          SFTP_PATH: ${{ secrets.SFTP_PATH }}
+        run: |
+          lftp --env-password -u "$SFTP_USER" "sftp://$SFTP_HOST" <<LFTP
+          set sftp:auto-confirm yes
+          set net:max-retries 2
+          set net:timeout 30
+          mirror --reverse --verbose --parallel=4 --exclude-glob api/data/zaehler.json public/ "$SFTP_PATH"
+          bye
+          LFTP

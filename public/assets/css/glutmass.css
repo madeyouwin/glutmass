@@ -1,0 +1,152 @@
+/* GLUTMASS – Stylesheet. Farben laut CI (CLAUDE.md), hell und dunkel. Mobile first. */
+
+@font-face{font-family:"Big Shoulders Display";font-weight:800;font-style:normal;font-display:swap;src:url("../fonts/big-shoulders-display-latin-800-normal.woff2") format("woff2")}
+@font-face{font-family:"Big Shoulders Display";font-weight:900;font-style:normal;font-display:swap;src:url("../fonts/big-shoulders-display-latin-900-normal.woff2") format("woff2")}
+@font-face{font-family:"DM Sans";font-weight:400;font-style:normal;font-display:swap;src:url("../fonts/dm-sans-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"DM Sans";font-weight:500;font-style:normal;font-display:swap;src:url("../fonts/dm-sans-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"DM Sans";font-weight:700;font-style:normal;font-display:swap;src:url("../fonts/dm-sans-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"Instrument Serif";font-weight:400;font-style:italic;font-display:swap;src:url("../fonts/instrument-serif-latin-400-italic.woff2") format("woff2")}
+
+/* Auf hellem Grund sind Glut, Bernstein und Kraut leicht abgedunkelt, damit die Kontraste reichen. */
+:root{
+  --bg:#F4EEE6; --surface:#FFFDF9; --sunk:#EAE2D7; --fg:#171412; --muted:#6B625A; --line:#DDD3C6;
+  --ember:#E0561A; --ember-strong:#C14A12; --ember-ink:#FFFFFF; --amber:#B86E00; --herb:#4F6F22; --herb-bg:#E2EBD3;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --ember:#F2611D; --ember-strong:#F2611D; --ember-ink:#171412; --amber:#FFB547; --herb:#9CC25E; --herb-bg:#25301A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --ember:#F2611D; --ember-strong:#F2611D; --ember-ink:#171412; --amber:#FFB547; --herb:#9CC25E; --herb-bg:#25301A; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:40px}
+.wrap{max-width:1080px;margin:0 auto}
+a{color:inherit;text-decoration-color:var(--ember);text-underline-offset:3px}
+a:hover{color:var(--ember-strong)}
+button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--surface);padding:8px 12px;border-radius:8px;z-index:10}
+.skip:focus{left:16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Kopf */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;padding-block:24px 18px;border-bottom:3px solid var(--fg)}
+.brand{text-decoration:none;display:block}
+.logo{font-family:var(--display);font-weight:900;font-size:clamp(44px,9vw,72px);line-height:.85;letter-spacing:-.01em;margin:0;color:var(--fg)}
+.logo span{color:var(--ember)}
+.ruler{height:18px;margin-top:6px;opacity:.9;background:
+  repeating-linear-gradient(90deg,var(--ember) 0 2px,transparent 2px 60px) top/100% 18px no-repeat,
+  repeating-linear-gradient(90deg,var(--ember) 0 2px,transparent 2px 12px) bottom/100% 8px no-repeat}
+.top-r{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+@media (min-width:600px){.top-r{align-items:flex-end;text-align:right}}
+.claim{font-family:var(--serif);font-style:italic;font-size:clamp(20px,3.4vw,28px);color:var(--amber);margin:0;line-height:1.1}
+.nav{display:flex;gap:16px;font-size:14px;font-weight:500}
+.nav a{text-decoration:none;padding-block:4px;border-bottom:2px solid transparent}
+.nav a[aria-current="page"]{border-color:var(--ember)}
+
+/* Rechner */
+.calc{display:grid;grid-template-columns:1fr;gap:28px;margin-top:24px;align-items:start}
+@media (min-width:861px){.calc{grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:40px}}
+.lead{margin:0 0 4px;max-width:46ch;font-size:17px}
+h1,h2{font-family:var(--display);font-weight:800;line-height:1;margin:0 0 4px;text-wrap:balance}
+h1{font-size:clamp(32px,6vw,44px)}
+h2{font-size:30px}
+.lab,legend{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;padding:0}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.block{display:flex;flex-direction:column;gap:12px;padding-block:20px;border-bottom:1px solid var(--line)}
+/* float holt die Legend ins Padding des Fieldsets, sonst klebt sie oben am Rand */
+.block legend{float:left;width:100%}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.row .name{font-weight:500}
+.row small{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.step{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;flex:none}
+.step button{width:44px;height:44px;border:0;background:none;color:var(--fg);font-size:22px;cursor:pointer;border-radius:999px;font-family:var(--body)}
+.step button:hover{background:var(--sunk)}
+.step button:disabled{opacity:.35;cursor:default;background:none}
+.step output{min-width:2.4ch;text-align:center;font-family:var(--display);font-weight:800;font-size:26px;font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--sunk);padding:5px;border-radius:14px}
+.seg input,.chips input{position:absolute;opacity:0;pointer-events:none}
+.seg label{text-align:center;padding:10px 6px;border-radius:10px;cursor:pointer;font-weight:500;font-size:15px;line-height:1.2}
+.seg label small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.seg input:checked + label{background:var(--surface);box-shadow:0 1px 0 var(--line),0 0 0 1px var(--line)}
+.seg input:focus-visible + label,.chips input:focus-visible + label{outline:2px solid var(--ember);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;font-weight:500;font-size:15px;background:var(--surface)}
+.chips input:checked + label{border-color:var(--ember-strong);background:var(--ember-strong);color:var(--ember-ink)}
+.chips.veg input:checked + label{border-color:var(--herb);background:var(--herb);color:var(--bg)}
+.chips-lab{margin-top:6px}
+
+/* Theken-Zettel */
+.slip{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:22px 22px 18px;box-shadow:0 12px 30px -18px rgba(23,20,18,.45)}
+@media (min-width:861px){.slip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}}
+.slip::before{content:"";position:absolute;left:0;right:0;top:-1px;height:6px;background:radial-gradient(circle at 6px 0,var(--bg) 4px,transparent 4.5px) 0 0/12px 6px repeat-x}
+.slip h2{font-size:26px}
+.guests{color:var(--muted);font-size:14px;margin:0 0 14px}
+.items{list-style:none;margin:0;padding:0}
+.items li{display:grid;grid-template-columns:4.2ch 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line)}
+.items .n{font-family:var(--display);font-weight:900;font-size:28px;line-height:1;text-align:right;color:var(--ember);font-variant-numeric:tabular-nums}
+.items .t{font-weight:500;min-width:0}
+.items .t small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.items .w{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.items li.veg .n{color:var(--herb)}
+.items li.side .n{color:var(--fg);font-size:22px}
+.items li.warn{grid-template-columns:1fr;color:var(--ember-strong);font-weight:500;font-size:14px}
+.sum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px}
+.sum .price{font-family:var(--display);font-weight:900;font-size:40px;line-height:1;color:var(--ember);white-space:nowrap}
+.sum small{color:var(--muted);font-size:13px}
+.waste{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--herb-bg);color:var(--fg)}
+.waste:empty{display:none}
+.waste b{font-family:var(--display);font-weight:900;font-size:30px;color:var(--herb);line-height:1;display:block}
+.waste p{margin:4px 0 0;font-size:14px}
+.share{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;border:0;border-radius:999px;padding:12px 18px;font:700 15px var(--body);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--ember-strong);color:var(--ember-ink)}
+.btn.primary:hover{color:var(--ember-ink);filter:brightness(1.08)}
+.btn.ghost{background:var(--sunk);color:var(--fg)}
+.toast{font-size:13px;color:var(--herb);font-weight:700;min-height:1.4em;margin:8px 0 0}
+.counter{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.counter strong{color:var(--fg)}
+
+/* Eigene Annahmen */
+details.tune{margin-top:36px;border-top:3px solid var(--fg);padding-top:14px}
+summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:26px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:" +";color:var(--ember)}
+details[open] summary::after{content:" –"}
+.intro{max-width:65ch;color:var(--muted)}
+.tw{overflow-x:auto;margin-top:18px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+.tune table{min-width:520px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tbody th{font-size:15px;letter-spacing:0;text-transform:none;color:var(--fg);font-weight:500}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td input{width:6.5em;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:500 15px var(--body);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.veg-tag{color:var(--herb);font-size:13px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+/* Textseiten */
+.prose{max-width:70ch;margin-top:28px}
+.prose h1{margin-bottom:12px}
+.prose h2{font-size:26px;margin-top:36px}
+.prose h3{font-size:17px;margin:24px 0 4px}
+.prose p,.prose li{max-width:68ch}
+.prose ul,.prose ol{padding-left:1.3em}
+.prose .tw{max-width:100%}
+.note{background:var(--herb-bg);border-radius:12px;padding:14px 16px}
+.formula{font-family:var(--display);font-weight:800;font-size:22px;line-height:1.25;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+
+/* Fuss */
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer p{margin:0;max-width:62ch}
+footer nav{display:flex;gap:16px;flex-wrap:wrap}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

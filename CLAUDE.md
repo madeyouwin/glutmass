@@ -17,25 +17,26 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 
 ## Aktueller Stand
 
-- `prototype/index.html`: klickbarer Prototyp (eine Datei, Vanilla JS). Rechenlogik, Werkstatt zum Ändern der Annahmen, Teilen per Kopieren/WhatsApp.
-- Noch nicht gebaut: echte Seitenstruktur, gemeinsamer Zähler, Rechtstexte, Deployment.
+- `public/`: erste produktive Version (Okt. 2026): Rechner, „So rechnen wir“, Datenschutz, lokale Schriften, CSP-Header.
+- `public/assets/js/calc.js`: Rechenlogik als Modul, Tests in `tests/` (laufen in GitHub Actions). `tests/methode.test.mjs` hält „So rechnen wir“ und `calc.js` synchron.
+- `public/api/zaehler.php`: gemeinsamer Zähler (Datei-basiert, keine IP, Sperre pro Browser-Sitzung, max. 50 kg pro Liste, 30 Listen pro Minute). Gezählt wird nur beim Kopieren/Teilen und nur mit Standardannahmen.
+- „Werkstatt“ heißt jetzt „Eigene Annahmen“ (localStorage, nur wenn geändert).
+- `.github/workflows/deploy.yml`: Tests + SFTP-Upload per lftp; überspringt den Upload, solange die Secrets fehlen.
+- `prototype/index.html`: ursprünglicher Klick-Prototyp, nur noch als Referenz.
 
-## Rechenlogik (Prototyp-Standardwerte, noch nicht final bestätigt)
+## Rechenlogik (von Marc bestätigt, Okt. 2026)
 
-- Fleisch pro Erwachsenem: 300 g roh (normaler Hunger, Party, normale Beilagen).
+- Fleisch pro Erwachsenem: 250 g roh (normaler Hunger, Party, normale Beilagen).
 - Faktoren: Hunger 0,8 / 1 / 1,25 · Anlass 0,85 / 1 / 1,3 · Beilagen wenig 1,12 / normal 1 / viel 0,85.
-- Kinder (bis 12): 120 g, werden komplett als Bratwurst gerechnet.
+- Kinder (bis 12): 120 g, Bratwurst und Hähnchenspieß 70 : 30 (ohne Beilagen-Faktor). Fehlt eins davon, bekommt das andere alles; fehlen beide, das erste gewählte Fleisch.
 - Vegetarier: 250 g Grillkäse + Gemüsespieß (50/50).
 - Stückgewichte: Bratwurst 100 g, Nackensteak 200 g, Hähnchenspieß 150 g, Rumpsteak 250 g, Bauchscheiben 120 g, Grillkäse 100 g, Gemüsespieß 150 g.
 - Fleischmix nach Anteilen (Bratwurst 35, Nacken 30, Hähnchen 20, Rumpsteak 15, Bauch 15), normalisiert auf die gewählten Artikel.
 - Stückzahl = gerundet (Gewicht / Stückgewicht), mindestens 1.
 - Beilagen: 1,5 Brötchen/Erw., 1/Kind, Salat 150 g p. P., Saucen 50 ml p. P.
-- Preise sind Richtwerte in €/kg (siehe Prototyp).
+- Preise sind Richtwerte in €/kg (siehe `public/assets/js/calc.js`).
 
-**Offene fachliche Fragen an Marc (Fleischbranche, er kennt die Theke):**
-1. Bratwurst eher 120–150 g statt 100 g?
-2. 300 g Fleisch pro Erwachsenem realistisch?
-3. Kinder nur Bratwurst, oder auch Hähnchen?
+**Entscheidungen (21.10.2026):** Bratwurst bleibt 100 g. Basis 250 g statt 300 g pro Erwachsenem. Kinder bekommen Bratwurst und Hähnchen.
 
 ## Food-Waste-Zähler
 
@@ -94,11 +95,15 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 
 Grillplaner + Garzeiten (Premium-PDF) → weitere Anlässe (Raclette, Fondue, Buffet, Hochzeit) → White-Label-Widget für Metzgereien und Hofläden → AT und CH.
 
-## Nächste Aufgabe für Claude Code
+## Erledigt: erste produktive Version (21.10.2026)
 
-Aus `prototype/index.html` die erste produktive Version bauen:
-1. Projektstruktur: `public/` mit `index.html`, `so-rechnen-wir.html`, `datenschutz.html`, ausgelagertem CSS/JS, lokalen Schriften.
-2. Rechenlogik in ein eigenes Modul mit kleinen Tests.
-3. PHP-Endpunkt für den gemeinsamen Zähler (anonyme Summe, Datei-basiert).
-4. GitHub-Action für SFTP-Deployment (Secrets-Platzhalter, Marc trägt Werte ein).
-5. Vor dem Bauen die drei offenen fachlichen Fragen mit Marc klären.
+Projektstruktur, Rechenmodul mit Tests, PHP-Zähler und SFTP-Action sind gebaut (siehe README).
+
+## Offene To-dos für Marc
+
+1. GitHub-Secrets `SFTP_HOST`, `SFTP_USER`, `SFTP_PASSWORD`, `SFTP_PATH` eintragen (SFTP im Strato-Paket prüfen).
+2. Postfach `kontakt@glutmass.de` bei Strato anlegen (steht in Footer und Datenschutz).
+3. AV-Vertrag mit Strato im Kundenbereich abschließen (Datenschutzerklärung verweist darauf).
+4. Strato-Löschfrist der Server-Logs prüfen und ggf. konkret in `datenschutz.html` nennen.
+5. HTTPS-Weiterleitung im Strato-Kundenbereich aktivieren (alternativ Zeilen in `public/.htaccess` einkommentieren).
+6. Nach dem ersten Deployment prüfen, dass `/api/data/zaehler.json` von außen 403 liefert.
