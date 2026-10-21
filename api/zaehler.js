@@ -1,6 +1,6 @@
 // GLUTMASS – gemeinsamer Zaehler als Vercel Function.
 // Addiert anonym die Gramm "weniger eingekauft" geteilter Listen. Speichert keine IP-Adressen
-// und keine Personendaten, nur zwei Summen und eine globale Minuten-Bremse.
+// und keine Personendaten, nur zwei Summen und globale Bremsen pro Minute und pro Tag.
 //
 // GET  -> {"gramm": 123456, "listen": 789}
 // POST {"gramm": 950} -> neue Summen
@@ -13,6 +13,7 @@
 export const MIN_GRAMM = 100;
 export const MAX_GRAMM = 50000; // hoechstens 50 kg pro Liste
 export const MAX_PRO_MINUTE = 30; // globale Bremse gegen Massen-Einsendungen
+export const MAX_PRO_TAG = 2000; // Obergrenze pro Tag (UTC), schützt die Summe vor Spam-Wellen
 const MAX_BODY = 200;
 const KEY_GRAMM = "glutmass:gramm";
 const KEY_LISTEN = "glutmass:listen";
@@ -94,10 +95,15 @@ export async function POST(request) {
   if (p.fehler) return antwort(p.status, { fehler: p.fehler });
 
   try {
-    const minute = `glutmass:minute:${Math.floor(Date.now() / 60000)}`;
-    const [anzahl] = await redis(s, "pipeline", [["INCR", minute], ["EXPIRE", minute, 120]]);
-    if (anzahl > MAX_PRO_MINUTE) {
-      return antwort(429, await summen(s), { "Retry-After": "60" });
+    const jetzt = Date.now();
+    const minute = `glutmass:minute:${Math.floor(jetzt / 60000)}`;
+    const tag = `glutmass:tag:${Math.floor(jetzt / 86400000)}`;
+    const [anzahl, , tagesAnzahl] = await redis(s, "pipeline", [
+      ["INCR", minute], ["EXPIRE", minute, 120],
+      ["INCR", tag], ["EXPIRE", tag, 172800],
+    ]);
+    if (anzahl > MAX_PRO_MINUTE || tagesAnzahl > MAX_PRO_TAG) {
+      return antwort(429, await summen(s), { "Retry-After": anzahl > MAX_PRO_MINUTE ? "60" : "3600" });
     }
     const [gramm, listen] = await redis(s, "multi-exec", [["INCRBY", KEY_GRAMM, p.gramm], ["INCR", KEY_LISTEN]]);
     return antwort(200, { gramm: zahl(gramm), listen: zahl(listen) });

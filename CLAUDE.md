@@ -19,8 +19,10 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 
 - `public/`: erste produktive Version (Okt. 2026): Rechner, „So rechnen wir“, Datenschutz, lokale Schriften, CSP-Header.
 - `public/assets/js/calc.js`: Rechenlogik als Modul, Tests in `tests/` (laufen in GitHub Actions). `tests/methode.test.mjs` hält „So rechnen wir“ und `calc.js` synchron.
-- `api/zaehler.js`: gemeinsamer Zähler als Vercel Function (Region fra1), Speicher Upstash Redis (Frankfurt) über REST, keine IP, Sperre pro Browser-Sitzung, max. 50 kg pro Liste, 30 Listen pro Minute. Ohne Speicher-Variablen antwortet er 503, die Seite zeigt dann „gerade nicht erreichbar“. Gezählt wird nur beim Kopieren/Teilen und nur mit Standardannahmen.
-- „Werkstatt“ heißt jetzt „Eigene Annahmen“ (localStorage, nur wenn geändert).
+- `api/zaehler.js`: gemeinsamer Zähler als Vercel Function (Region fra1), Speicher Upstash Redis (Frankfurt) über REST, keine IP, Sperre pro Browser-Sitzung, max. 50 kg pro Liste, 30 Listen pro Minute, 2.000 pro Tag. Ohne Speicher-Variablen antwortet er 503, die Seite zeigt dann „gerade nicht erreichbar“. Gezählt wird nur beim Kopieren/Teilen und nur mit Standardannahmen.
+- „Werkstatt“ heißt jetzt „Eigene Annahmen“ (localStorage, nur wenn geändert). Eingaben mit Grenzen wie in `sanitizeConfig` und Fehlerhinweis.
+- Gästezahl per +/− oder direkt eintippbar (0–99). Teilen/Kopieren ohne Gäste zeigt „Erst Gäste eintragen.“. Auf dem Handy Sprunglink „Zur Einkaufsliste für N ↓“ nach Schritt 3 (keine feste Leiste).
+- Launch-Technik: og/twitter-Tags mit `og-glutmass.jpg` (1200×630, helles Design), Favicons (ico, svg, apple-touch, Manifest), `sitemap.xml`, robots.txt mit Sitemap, HSTS in `vercel.json`. Touch-Ziele mind. 44 px, axe-core ohne Befund.
 - `vercel.json`: statische Ausgabe aus `public/`, Function-Region fra1, Sicherheits-Header (CSP usw.) und Caching.
 - `.github/workflows/tests.yml`: nur Tests. Veröffentlicht wird über die Vercel-GitHub-Integration bei jedem Push auf `main`.
 - `prototype/index.html`: ursprünglicher Klick-Prototyp, nur noch als Referenz.

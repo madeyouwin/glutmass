@@ -84,7 +84,11 @@ function renderChips() {
 }
 
 function renderSteppers() {
-  for (const k of ["adults", "kids", "veg"]) $(k).textContent = state[k];
+  for (const k of ["adults", "kids", "veg"]) {
+    const inp = $(k);
+    inp.max = k === "veg" ? state.adults : MAX_GUESTS;
+    if (document.activeElement !== inp || inp.value !== "") inp.value = state[k];
+  }
   document.querySelectorAll("[data-step]").forEach((btn) => {
     const k = btn.dataset.step, d = +btn.dataset.d;
     const max = k === "veg" ? state.adults : MAX_GUESTS;
@@ -126,7 +130,11 @@ function update() {
   renderWaste(r);
   renderLeftovers(r);
 
-  $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(shareText(r));
+  $("waBtn").href = g.total ? "https://wa.me/?text=" + encodeURIComponent(shareText(r)) : "#liste";
+  $("waBtn").setAttribute("aria-disabled", String(!g.total));
+  $("copyBtn").setAttribute("aria-disabled", String(!g.total));
+  $("jump").hidden = !g.total;
+  $("jump").textContent = g.total ? `Zur Einkaufsliste für ${g.total} ↓` : "";
   $("summary").textContent = g.total ? `Liste aktualisiert: ${r.lines.length} Grillartikel für ${g.total} Gäste.` : "";
   renderSteppers();
 }
@@ -214,17 +222,21 @@ async function countList() {
 }
 
 // --- Eigene Annahmen -------------------------------------------------------
-function numInput(value, step, label, onChange) {
+function numInput(value, step, label, [min, max], onChange) {
   const input = el("input");
   input.type = "number";
   input.inputMode = "decimal";
-  input.min = "0";
-  input.step = String(step);
+  input.min = String(min);
+  input.max = String(max);
+  input.step = "any";
   input.value = value;
   input.setAttribute("aria-label", label);
+  input.title = `Erlaubt: ${min} bis ${max}`;
   input.addEventListener("input", () => {
-    const v = parseFloat(input.value);
-    if (!Number.isFinite(v) || v < 0) return;
+    const v = parseFloat(input.value.replace(",", "."));
+    const ok = Number.isFinite(v) && v >= min && v <= max;
+    input.setAttribute("aria-invalid", String(!ok));
+    if (!ok) return toast("cfgToast", `${label}: bitte einen Wert von ${min} bis ${max} eingeben.`);
     onChange(v);
     saveConfig();
     update();
@@ -238,9 +250,9 @@ function renderConfig() {
     const name = el("td", null, item.name + " ");
     if (item.veg) name.append(el("span", "veg-tag", "veg."));
     tr.append(name);
-    for (const [field, step, unit] of [["piece", 10, "Stückgewicht in Gramm"], ["share", 5, "Anteil in Prozent"], ["price", 0.5, "Preis in Euro pro Kilo"]]) {
+    for (const [field, step, unit, range] of [["piece", 10, "Stückgewicht in Gramm", [10, 2000]], ["share", 5, "Anteil in Prozent", [0, 1000]], ["price", 0.5, "Preis in Euro pro Kilo", [0, 500]]]) {
       const td = el("td");
-      td.append(numInput(item[field], step, `${item.name}: ${unit}`, (v) => { item[field] = field === "piece" ? Math.max(10, v) : v; }));
+      td.append(numInput(item[field], step, `${item.name}: ${unit}`, range, (v) => { item[field] = v; }));
       tr.append(td);
     }
     return tr;
@@ -248,7 +260,7 @@ function renderConfig() {
   $("cfgBase").replaceChildren(...Object.entries(BASE_INFO).map(([k, [label, hint]]) => {
     const tr = el("tr");
     const td = el("td");
-    td.append(numInput(cfg.base[k], k.startsWith("bread") ? 0.5 : 10, label, (v) => { cfg.base[k] = v; }));
+    td.append(numInput(cfg.base[k], k.startsWith("bread") ? 0.5 : 10, label, [0, 5000], (v) => { cfg.base[k] = v; }));
     tr.append(el("th", null, label), td, el("td", "muted", hint));
     tr.firstChild.scope = "row";
     return tr;
@@ -262,6 +274,17 @@ document.querySelectorAll("[data-step]").forEach((btn) => btn.addEventListener("
   state.veg = Math.min(state.veg, state.adults);
   update();
 }));
+document.querySelectorAll("input.count").forEach((inp) => {
+  inp.addEventListener("input", () => {
+    if (inp.value === "") return;
+    const max = inp.id === "veg" ? state.adults : MAX_GUESTS;
+    state[inp.id] = Math.max(0, Math.min(max, Math.floor(Number(inp.value) || 0)));
+    state.veg = Math.min(state.veg, state.adults);
+    update();
+  });
+  inp.addEventListener("blur", () => { inp.value = state[inp.id]; });
+  inp.addEventListener("focus", () => inp.select());
+});
 document.querySelectorAll(".seg input").forEach((r) => r.addEventListener("change", update));
 
 $("copyBtn").addEventListener("click", async () => {
@@ -273,7 +296,10 @@ $("copyBtn").addEventListener("click", async () => {
     toast("toast", "Kopieren ging nicht – bitte per WhatsApp teilen.");
   }
 });
-$("waBtn").addEventListener("click", () => countList());
+$("waBtn").addEventListener("click", (e) => {
+  if (!current?.guests.total) { e.preventDefault(); return toast("toast", "Erst Gäste eintragen."); }
+  countList();
+});
 $("cfgReset").addEventListener("click", () => {
   cfg = cloneDefaults();
   saveConfig();

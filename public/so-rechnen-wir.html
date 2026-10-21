@@ -6,9 +6,23 @@
 <title>So rechnen wir – GLUTMASS</title>
 <meta name="description" content="Die offene Methode hinter dem GLUTMASS-Grillrechner: Grundmengen, Faktoren, Stückgewichte, die 400-g-Faustregel als Vergleich und wie der gemeinsame Zähler funktioniert.">
 <link rel="canonical" href="https://glutmass.de/so-rechnen-wir.html">
+<meta property="og:site_name" content="GLUTMASS">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://glutmass.de/so-rechnen-wir.html">
+<meta property="og:title" content="So rechnen wir – GLUTMASS">
+<meta property="og:description" content="Die offene Methode hinter dem GLUTMASS-Grillrechner: Grundmengen, Faktoren, Stückgewichte, die 400-g-Faustregel als Vergleich und wie der gemeinsame Zähler funktioniert.">
+<meta property="og:image" content="https://glutmass.de/og-glutmass.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLUTMASS – Richtig rechnen. Satt grillen. Kauf, was gegessen wird.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F4EEE6">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=10">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=11">
 </head>
 <body>
 <a class="skip" href="#inhalt">Zum Inhalt springen</a>
@@ -29,7 +43,7 @@
 <p>GLUTMASS rechnet komplett in deinem Browser. Hier steht offen, mit welchen Werten – damit du jede Zahl auf deinem Zettel nachvollziehen kannst. Alle Werte sind Erfahrungs- und Richtwerte aus der Praxis an der Fleischtheke, keine wissenschaftlichen Messwerte.</p>
 
 <h2>1. Grundmenge pro Person</h2>
-<div class="tw"><table>
+<div class="tw" tabindex="0" role="region" aria-label="Tabelle 1. Grundmenge pro Person"><table>
   <thead><tr><th scope="col">Wer</th><th scope="col" class="num">Menge</th><th scope="col">Was</th></tr></thead>
   <tbody>
     <tr><th scope="row">Erwachsene mit Fleisch</th><td class="num"><span data-wert="base.adult">250</span> g</td><td>Fleisch roh, bei normalem Hunger, Party und normalen Beilagen</td></tr>
@@ -41,7 +55,7 @@
 
 <h2>2. Faktoren</h2>
 <p>Die Grundmenge wird mit drei Faktoren multipliziert. Bei Kindern zählen nur Hunger und Anlass.</p>
-<div class="tw"><table>
+<div class="tw" tabindex="0" role="region" aria-label="Tabelle 2. Faktoren"><table>
   <thead><tr><th scope="col">Faktor</th><th scope="col" class="num">Wenig / kurz</th><th scope="col" class="num">Normal</th><th scope="col" class="num">Viel / lang</th></tr></thead>
   <tbody>
     <tr><th scope="row">Hunger</th><td class="num"><span data-wert="factors.hunger.wenig">0,8</span></td><td class="num"><span data-wert="factors.hunger.normal">1</span></td><td class="num"><span data-wert="factors.hunger.gross">1,25</span></td></tr>
@@ -54,7 +68,7 @@
 <h2>3. Vom Gewicht zum Stück</h2>
 <p>Die Fleischmenge wird nach Anteilen auf die Artikel verteilt, die du auswählst. Wählst du nur einen Teil, werden die Anteile auf diese Artikel hochgerechnet.</p>
 <p class="formula">Stückzahl = Gewicht ÷ Stückgewicht, gerundet, mindestens 1</p>
-<div class="tw"><table>
+<div class="tw" tabindex="0" role="region" aria-label="Tabelle 3. Vom Gewicht zum Stück"><table>
   <thead><tr><th scope="col">Artikel</th><th scope="col" class="num">Stückgewicht</th><th scope="col" class="num">Anteil</th><th scope="col" class="num">Richtpreis</th></tr></thead>
   <tbody>
     <tr><th scope="row">Bratwurst</th><td class="num"><span data-wert="items.wurst.piece">100</span> g</td><td class="num"><span data-wert="items.wurst.share">35</span></td><td class="num"><span data-wert="items.wurst.price">9</span> €/kg</td></tr>

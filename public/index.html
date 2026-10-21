@@ -6,17 +6,26 @@
 <title>GLUTMASS – Grillrechner: Wie viel Fleisch pro Person?</title>
 <meta name="description" content="Grillgut-Rechner in Stückzahlen: Wie viele Bratwürste, Steaks und Spieße du für deine Grillparty brauchst – mit Kindern, Vegetariern und Beilagen. Ohne Anmeldung, ohne Tracking.">
 <link rel="canonical" href="https://glutmass.de/">
-<meta property="og:title" content="GLUTMASS – Richtig rechnen. Satt grillen.">
-<meta property="og:description" content="Der Grillrechner in Stückzahlen – so, wie du an der Theke bestellst.">
-<meta property="og:url" content="https://glutmass.de/">
+<meta property="og:site_name" content="GLUTMASS">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://glutmass.de/">
+<meta property="og:title" content="GLUTMASS – Grillrechner: Wie viel Fleisch pro Person?">
+<meta property="og:description" content="Grillgut-Rechner in Stückzahlen: Wie viele Bratwürste, Steaks und Spieße du für deine Grillparty brauchst – mit Kindern, Vegetariern und Beilagen. Ohne Anmeldung, ohne Tracking.">
+<meta property="og:image" content="https://glutmass.de/og-glutmass.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLUTMASS – Richtig rechnen. Satt grillen. Kauf, was gegessen wird.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F4EEE6">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=10">
-<script type="module" src="/assets/js/app.js?v=5"></script>
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=11">
+<script type="module" src="/assets/js/app.js?v=6"></script>
 </head>
 <body>
 <a class="skip" href="#rechner">Zum Rechner springen</a>
@@ -36,7 +45,8 @@
 </section>
 
 <div class="wrap">
-<main id="rechner" class="calc">
+<main id="rechner">
+<div class="calc">
 <section aria-labelledby="calcTitle">
   <h1 id="calcTitle">Wie viel Grillgut brauchst du?</h1>
   <p class="lead">Sag, wer kommt – GLUTMASS sagt dir in Stück, was du an der Theke bestellst.</p>
@@ -47,15 +57,15 @@
     <div class="guests-set">
     <div class="row" role="group" aria-labelledby="l-adults">
       <span class="name" id="l-adults">Erwachsene</span>
-      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><output id="adults" aria-live="polite">0</output><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div>
+      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><input class="count" id="adults" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-adults"><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div>
     </div>
     <div class="row" role="group" aria-labelledby="l-kids">
       <span class="name" id="l-kids">Kinder<small>bis 12 Jahre</small></span>
-      <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><output id="kids" aria-live="polite">0</output><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div>
+      <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><input class="count" id="kids" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-kids"><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div>
     </div>
     <div class="row" role="group" aria-labelledby="l-veg">
       <span class="name" id="l-veg">Vegetarier<small>von den Erwachsenen</small></span>
-      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><output id="veg" aria-live="polite">0</output><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div>
+      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><input class="count" id="veg" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-veg"><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div>
     </div>
     </div>
   </fieldset>
@@ -97,6 +107,7 @@
       <legend class="chips-lab">Vegetarisch</legend>
       <div class="chips veg" id="vegChips"></div>
     </fieldset>
+    <a class="jump" id="jump" href="#liste" hidden>Zur Einkaufsliste ↓</a>
   </div>
 </section>
 
@@ -128,17 +139,17 @@
   <p class="sr" id="summary" role="status"></p>
 </div>
 </aside>
-</main>
+</div>
 
 <details class="tune" id="annahmen">
   <summary>Eigene Annahmen</summary>
   <p class="intro">Hier stehen die Werte, mit denen GLUTMASS rechnet. Passe sie an deine Theke an – die Liste rechnet sofort neu. Deine Werte bleiben nur in diesem Browser gespeichert. Listen mit eigenen Annahmen zählen nicht für den gemeinsamen Zähler.</p>
-  <div class="tw"><table>
+  <div class="tw" tabindex="0" role="region" aria-label="Tabelle Artikel"><table>
     <caption class="sr">Artikel: Stückgewicht, Anteil und Preis</caption>
     <thead><tr><th scope="col">Artikel</th><th scope="col">Stückgewicht (g)</th><th scope="col">Anteil (%)</th><th scope="col">Preis (€/kg)</th></tr></thead>
     <tbody id="cfgItems"></tbody>
   </table></div>
-  <div class="tw"><table>
+  <div class="tw" tabindex="0" role="region" aria-label="Tabelle Grundwerte"><table>
     <caption class="sr">Grundwerte</caption>
     <thead><tr><th scope="col">Grundwert</th><th scope="col">Wert</th><th scope="col">Erklärung</th></tr></thead>
     <tbody id="cfgBase"></tbody>
@@ -148,6 +159,7 @@
   </div>
   <p class="toast" id="cfgToast" role="status"></p>
 </details>
+</main>
 
 <footer>
   <p>Alles wird direkt in deinem Browser gerechnet. Keine Cookies, kein Tracking. Mengen und Preise sind Richtwerte. Ein privates Projekt ohne Werbung.</p>
