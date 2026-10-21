@@ -15,12 +15,11 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=6">
-<script type="module" src="/assets/js/app.js?v=4"></script>
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=7">
+<script type="module" src="/assets/js/app.js?v=5"></script>
 </head>
 <body>
 <a class="skip" href="#rechner">Zum Rechner springen</a>
-<div class="wrap">
 <header class="top">
   <a class="brand" href="/" aria-label="GLUTMASS Startseite">
     <p class="logo">GLUT<span>MASS</span></p>
@@ -35,32 +34,44 @@
   </div>
 </header>
 
-<p class="fw-band">Kauf, was gegessen wird.</p>
+<section class="fw" aria-labelledby="fwTitle">
+  <h2 id="fwTitle" class="fw-title">Kauf, was gegessen wird.</h2>
+  <p class="fw-text">Grillfleisch wird meist nach der Faustregel „400&nbsp;g pro Person“ gekauft. Was übrig bleibt, landet oft später in der Tonne. GLUTMASS rechnet in Stück, wie du an der Theke bestellst, und zeigt dir, wie viel weniger das ist als nach der Faustregel.</p>
+  <ul class="fw-facts">
+    <li><b>74,5 kg</b><span>Lebensmittel wirft jeder Mensch in Deutschland pro Jahr im Haushalt weg.<small>BMLEH, Bezugsjahr 2022</small></span></li>
+    <li><b>250 g</b><span>Fleisch pro Erwachsenem bei normalem Hunger statt 400&nbsp;g nach Faustregel.</span></li>
+    <li><b>Stück</b><span>statt Gramm: eine Liste, mit der du direkt an die Theke gehst.</span></li>
+  </ul>
+  <p class="fw-more"><a href="/so-rechnen-wir.html">So rechnen wir</a> · <a href="/so-rechnen-wir.html#zaehler">Wie der Zähler zählt</a></p>
+</section>
 
+<div class="wrap">
 <main id="rechner" class="calc">
 <section aria-labelledby="calcTitle">
   <h1 id="calcTitle">Wie viel Grillgut brauchst du?</h1>
   <p class="lead">Sag, wer kommt – GLUTMASS sagt dir in Stück, was du an der Theke bestellst.</p>
   <noscript><p class="note">Der Rechner braucht JavaScript. Die komplette Methode findest du auf <a href="/so-rechnen-wir.html">So rechnen wir</a>.</p></noscript>
 
-  <fieldset class="block guests-set">
-    <legend><span class="num" aria-hidden="true">1</span>Gäste</legend>
+  <fieldset class="block">
+    <legend><span class="stepnum" aria-hidden="true">1</span>Gäste</legend>
+    <div class="guests-set">
     <div class="row" role="group" aria-labelledby="l-adults">
       <span class="name" id="l-adults">Erwachsene</span>
-      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><output id="adults" aria-live="polite">8</output><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div>
+      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><output id="adults" aria-live="polite">0</output><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div>
     </div>
     <div class="row" role="group" aria-labelledby="l-kids">
       <span class="name" id="l-kids">Kinder<small>bis 12 Jahre</small></span>
-      <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><output id="kids" aria-live="polite">4</output><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div>
+      <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><output id="kids" aria-live="polite">0</output><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div>
     </div>
     <div class="row" role="group" aria-labelledby="l-veg">
       <span class="name" id="l-veg">Vegetarier<small>von den Erwachsenen</small></span>
-      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><output id="veg" aria-live="polite">2</output><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div>
+      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><output id="veg" aria-live="polite">0</output><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div>
+    </div>
     </div>
   </fieldset>
 
   <div class="block runde" role="group" aria-labelledby="rundeTitle">
-    <p class="step-title" id="rundeTitle"><span class="num" aria-hidden="true">2</span>Die Runde</p>
+    <p class="step-title" id="rundeTitle"><span class="stepnum" aria-hidden="true">2</span>Die Runde</p>
     <fieldset class="segrow">
       <legend>Hunger</legend>
       <div class="seg">
@@ -89,7 +100,7 @@
 
   <div class="block">
     <fieldset>
-      <legend><span class="num" aria-hidden="true">3</span>Auf den Grill</legend>
+      <legend><span class="stepnum" aria-hidden="true">3</span>Auf den Grill</legend>
       <div class="chips" id="meatChips"></div>
     </fieldset>
     <fieldset>

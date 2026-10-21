@@ -46,7 +46,7 @@ const el = (tag, cls, text) => {
 const store = (kind) => { try { return window[kind]; } catch { return null; } };
 
 let cfg = loadConfig();
-const state = { adults: 8, kids: 4, veg: 2, selected: new Set(defaultSelection()) };
+const state = { adults: 0, kids: 0, veg: 0, selected: new Set(defaultSelection()) };
 let current = null;
 
 function loadConfig() {
@@ -111,7 +111,7 @@ function update() {
   $("slipTitle").textContent = g.total ? `Grillparty für ${g.total}` : "Wer kommt?";
   $("guestLine").textContent = g.total
     ? `${g.adults} Erwachsene${g.veg ? ` (davon ${g.veg} vegetarisch)` : ""} · ${g.kids} ${g.kids === 1 ? "Kind" : "Kinder"}`
-    : "Gib links die Gäste ein.";
+    : "Trag oben ein, wer kommt.";
 
   const list = $("items");
   list.replaceChildren(
@@ -121,7 +121,7 @@ function update() {
       ? itemRow(s.count, "side", s.name, s.note, "")
       : itemRow("", "side", `${sideAmount(s)} ${s.name}`, s.note, "")),
   );
-  $("price").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "–";
+  $("price").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "";
 
   renderWaste(r);
   renderLeftovers(r);
