@@ -12,8 +12,8 @@
 /* Auf hellem Grund sind Glut, Bernstein und Kraut leicht abgedunkelt, damit die Kontraste reichen.
    --band ist immer dunkel (Kopf, Fuß, Ergebnis-Leiste), --frame ist der Rahmen um die App. */
 :root{
-  --page:#171412; --glow:rgba(224,86,26,.9); --bg:#F4EEE6; --surface:#FFFDF9; --sunk:#EAE2D7; --fg:#171412; --muted:#6B625A; --line:#DDD3C6;
-  --frame:transparent; --band:#171412; --band-fg:#F4EEE6; --band-muted:#BDB2A6;
+  --page:#F4EEE6; --glow:rgba(242,97,29,.13); --bg:#F4EEE6; --surface:#FFFDF9; --sunk:#EAE2D7; --fg:#171412; --muted:#6B625A; --line:#DDD3C6;
+  --frame:transparent; --band:#171412; --band-fg:#171412; --band-muted:#6B625A; --logo-mass:#E0561A; --ruler:#E0561A; --claim:#B86E00;
   --ember:#E0561A; --ember-strong:#C14A12; --ember-ink:#FFFFFF; --amber:#B86E00; --amber-hi:#FFB547;
   --herb:#4F6F22; --herb-bg:#E2EBD3; --herb-ink:#FFFFFF; --herb-soft:#DCE8C8; --herb-on-band:#A9C97A; --paper:#FFFFFF;
   --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
@@ -23,13 +23,13 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --page:#070605; --glow:rgba(242,97,29,.55); --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
-  --frame:#2C2723; --band:#0F0D0C; --band-fg:#F4EEE6; --band-muted:#BDB2A6;
+  --page:#171412; --glow:rgba(242,97,29,.22); --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --frame:#2C2723; --band:#0F0D0C; --band-fg:#F4EEE6; --band-muted:#BDB2A6; --logo-mass:#F2611D; --ruler:#F2611D; --claim:#FFB547;
   --ember:#F2611D; --ember-strong:#F2611D; --ember-ink:#171412; --amber:#FFB547; --amber-hi:#FFB547;
   --herb:#9CC25E; --herb-bg:#25301A; --herb-ink:#171412; --herb-soft:#2F3B21; --herb-on-band:#9CC25E; --paper:#26211E; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --page:#070605; --glow:rgba(242,97,29,.55); --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
-  --frame:#2C2723; --band:#0F0D0C; --band-fg:#F4EEE6; --band-muted:#BDB2A6;
+  --page:#171412; --glow:rgba(242,97,29,.22); --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --frame:#2C2723; --band:#0F0D0C; --band-fg:#F4EEE6; --band-muted:#BDB2A6; --logo-mass:#F2611D; --ruler:#F2611D; --claim:#FFB547;
   --ember:#F2611D; --ember-strong:#F2611D; --ember-ink:#171412; --amber:#FFB547; --amber-hi:#FFB547;
   --herb:#9CC25E; --herb-bg:#25301A; --herb-ink:#171412; --herb-soft:#2F3B21; --herb-on-band:#9CC25E; --paper:#26211E; color-scheme:dark}
 
@@ -47,9 +47,8 @@ button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{o
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* Teller auf Kohle */
-.wrap{--pad:clamp(14px,3.2vw,36px);max-width:1240px;margin:0 auto;background:var(--bg);border:2px solid var(--frame);border-radius:20px;overflow:hidden;
-  padding:0 var(--pad) 22px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6)}
-@media (min-width:861px){.wrap{border-radius:28px}}
+.wrap{--pad:4px;max-width:1240px;margin:0 auto;padding:0 4px 22px}
+@media (min-width:861px){.wrap{padding-inline:8px}}
 
 /* Kopf: eigener Bereich auf der Kohle, über dem Teller */
 .top{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr auto;align-items:start;gap:6px 16px;
@@ -57,21 +56,21 @@ button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{o
 @media (min-width:861px){.top{padding:4px 8px 24px}}
 .brand{text-decoration:none;display:block;width:max-content;max-width:100%}
 .logo{font-family:var(--display);font-weight:900;font-size:clamp(38px,7vw,64px);line-height:.85;letter-spacing:-.01em;margin:0;color:var(--band-fg)}
-.logo span{color:#F2611D}
+.logo span{color:var(--logo-mass)}
 /* Maßband: 20 Felder über die volle Wortbreite, langer Strich alle 5, Schlussstrich bündig rechts */
-.ruler{--t:#F2611D;height:14px;margin-top:6px;background:
+.ruler{--t:var(--ruler);height:14px;margin-top:6px;background:
   linear-gradient(var(--t),var(--t)) right top/2px 100% no-repeat,
   linear-gradient(90deg,var(--t) 0 2px,transparent 2px) left top/25% 100% repeat-x,
   linear-gradient(90deg,var(--t) 0 2px,transparent 2px) left bottom/5% 43% repeat-x}
 .top-r{display:contents}
-.claim{grid-column:1/-1;grid-row:2;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--amber-hi);margin:2px 0 0;line-height:1.1}
+.claim{grid-column:1/-1;grid-row:2;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--claim);margin:2px 0 0;line-height:1.1}
 .nav{grid-column:2;grid-row:1;display:flex;gap:6px;font-size:14px;font-weight:500;margin-top:6px}
-.nav a{text-decoration:none;padding:5px 12px;border-radius:999px;color:var(--band-fg);background:rgba(15,13,12,.72);border:1px solid rgba(244,238,230,.18)}
-.nav a:hover{color:#FFFFFF;border-color:rgba(244,238,230,.5)}
-.nav a[aria-current="page"]{background:var(--band-fg);color:#171412;border-color:var(--band-fg)}
+.nav a{text-decoration:none;padding:5px 12px;border-radius:999px;color:var(--fg);background:var(--surface);border:1px solid var(--line)}
+.nav a:hover{color:var(--fg);border-color:var(--herb)}
+.nav a[aria-current="page"]{background:var(--herb);color:var(--herb-ink);border-color:var(--herb)}
 
 /* Food Waste: eigener Bereich zwischen Kopf und Rechner */
-.fw{max-width:1240px;margin:0 auto 12px;padding:18px var(--fwpad,18px) 16px;border-radius:20px;background:var(--herb);color:var(--herb-ink)}
+.fw{max-width:1240px;margin:0 auto 4px;box-shadow:0 18px 40px -24px rgba(47,66,20,.55);padding:18px var(--fwpad,18px) 16px;border-radius:20px;background:var(--herb);color:var(--herb-ink)}
 @media (min-width:861px){.fw{--fwpad:36px;border-radius:28px;padding-block:28px 24px;margin-bottom:20px}}
 .fw-title{font-family:var(--display);font-weight:900;font-size:clamp(30px,6vw,56px);line-height:.95;margin:0 0 8px;color:inherit}
 .fw-text{margin:0;max-width:68ch;font-size:15px;line-height:1.45}
@@ -89,7 +88,7 @@ button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{o
 .fw a:hover{color:inherit;opacity:.85}
 
 /* Rechner */
-.calc{display:grid;grid-template-columns:1fr;gap:20px;padding-top:18px;align-items:start}
+.calc{display:grid;grid-template-columns:1fr;gap:20px;padding-top:14px;align-items:start}
 @media (min-width:861px){.calc{grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:36px;padding-top:28px}}
 h1,h2{font-family:var(--display);font-weight:800;line-height:1;margin:0 0 4px;text-wrap:balance}
 h1{font-size:clamp(28px,4.4vw,40px)}
@@ -102,7 +101,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .block:last-child{border-bottom:0}
 /* float holt die Legend ins Padding des Fieldsets, sonst klebt sie oben am Rand */
 .block legend{float:left;width:100%}
-.stepnum{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 6px;margin-right:8px;border-radius:999px;background:var(--ember-strong);color:var(--ember-ink);
+.stepnum{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 6px;margin-right:8px;border-radius:999px;background:var(--herb);color:var(--herb-ink);
   font-family:var(--display);font-weight:900;font-size:14px;letter-spacing:0;vertical-align:1px}
 
 /* 1 Gäste: drei Spalten nebeneinander */
@@ -111,7 +110,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .guests-set .row .step{margin-top:auto}
 .row .name{font-weight:500;font-size:15px;line-height:1.2}
 .row small{display:block;color:var(--muted);font-size:12px;font-weight:400}
-.step{display:flex;align-items:center;background:var(--surface);border:1.5px solid var(--fg);border-radius:999px;flex:none}
+.step{display:flex;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;flex:none}
 .step button{width:36px;height:36px;border:0;background:none;color:var(--fg);font-size:20px;cursor:pointer;border-radius:999px;font-family:var(--body);touch-action:manipulation}
 .step button:hover{background:var(--sunk)}
 .step button:disabled{opacity:.3;cursor:default;background:none}
@@ -123,7 +122,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .step-title{margin-bottom:0}
 .segrow{display:block}
 .segrow legend{float:none;width:auto;margin:0 0 4px;font-size:11px;color:var(--muted)}
-.seg{display:flex;width:100%;gap:4px;background:var(--sunk);padding:3px;border-radius:12px}
+.seg{display:flex;width:100%;gap:4px;background:var(--surface);border:1px solid var(--line);padding:3px;border-radius:12px}
 @media (min-width:600px){
   .segrow legend{float:left;width:80px;margin:0;padding-top:13px}
   .seg{width:auto;margin-left:84px}
@@ -131,8 +130,8 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .seg input,.chips input{position:absolute;opacity:0;pointer-events:none}
 .seg label{flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:7px 4px;border-radius:9px;cursor:pointer;font-weight:500;font-size:14px;line-height:1.15;overflow-wrap:anywhere}
 .seg label small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:1px}
-.seg input:checked + label{background:var(--fg);color:var(--bg);font-weight:700}
-.seg input:checked + label small{color:var(--line)}
+.seg input:checked + label{background:var(--herb);color:var(--herb-ink);font-weight:700}
+.seg input:checked + label small{color:var(--herb-ink);opacity:.85}
 .seg input:focus-visible + label,.chips input:focus-visible + label{outline:2px solid var(--ember);outline-offset:2px}
 
 /* 3 Grillgut */
@@ -201,7 +200,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .reste dd{margin:0;color:var(--fg)}
 
 /* Eigene Annahmen */
-details.tune{margin-top:28px;border-top:3px solid var(--fg);padding-top:12px}
+details.tune{margin-top:28px;border-top:2px solid var(--line);padding-top:12px}
 .tune > summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:24px;list-style:none}
 .tune > summary::-webkit-details-marker{display:none}
 .tune > summary::after{content:" +";color:var(--ember)}
