@@ -76,7 +76,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .seg label small{display:block;font-size:12px;color:var(--muted);font-weight:400}
 .seg input:checked + label{background:var(--surface);box-shadow:0 1px 0 var(--line),0 0 0 1px var(--line)}
 .seg input:focus-visible + label,.chips input:focus-visible + label{outline:2px solid var(--ember);outline-offset:2px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;clear:both}
 .chips label{padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;font-weight:500;font-size:15px;background:var(--surface)}
 .chips input:checked + label{border-color:var(--ember-strong);background:var(--ember-strong);color:var(--ember-ink)}
 .chips.veg input:checked + label{border-color:var(--herb);background:var(--herb);color:var(--bg)}
