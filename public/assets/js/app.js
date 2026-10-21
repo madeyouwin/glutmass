@@ -1,6 +1,6 @@
 // GLUTMASS Oberflaeche: liest Eingaben, ruft calc.js, zeichnet den Theken-Zettel.
 import {
-  MAX_GUESTS, calculate, sanitizeConfig, cloneDefaults, isDefaultConfig, defaultSelection,
+  MAX_GUESTS, calculate, sanitizeConfig, cloneDefaults, isDefaultConfig,
   fmtKg, fmtEur, sideAmount, shareText,
 } from "./calc.js?v=1";
 
@@ -31,9 +31,9 @@ const LEFTOVERS = {
 const LEFTOVER_ALL = ["Alles Gegrillte", "Schnell abkühlen lassen, in den Kühlschrank und in 1–2 Tagen essen – oder einfrieren."];
 
 const WARNINGS = {
-  "adults-no-meat": "Kein Fleisch gewählt – wähle oben mindestens einen Artikel.",
-  "kids-no-meat": "Für die Kinder ist kein Fleisch gewählt.",
-  "veg-no-items": "Für die Vegetarier ist nichts Vegetarisches gewählt.",
+  "adults-no-meat": "Wähl oben unter „Auf den Grill“ aus, was gegrillt wird.",
+  "kids-no-meat": "Für die Kinder: Bratwurst oder Hähnchenspieß auswählen.",
+  "veg-no-items": "Für die Vegetarier: Grillkäse oder Gemüsespieß auswählen.",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -46,7 +46,7 @@ const el = (tag, cls, text) => {
 const store = (kind) => { try { return window[kind]; } catch { return null; } };
 
 let cfg = loadConfig();
-const state = { adults: 0, kids: 0, veg: 0, selected: new Set(defaultSelection()) };
+const state = { adults: 0, kids: 0, veg: 0, selected: new Set() }; // alles startet leer
 let current = null;
 
 function loadConfig() {
@@ -119,7 +119,7 @@ function update() {
 
   const list = $("items");
   list.replaceChildren(
-    ...r.warnings.map((w) => el("li", "warn", WARNINGS[w])),
+    ...(state.selected.size ? r.warnings : r.warnings.length ? ["adults-no-meat"] : []).map((w) => el("li", "warn", WARNINGS[w])),
     ...r.lines.map((l) => itemRow(l.count, l.kind === "veg" ? "veg" : "", l.name, `${l.note} · à ${l.piece} g`, fmtKg(l.grams))),
     ...r.sides.map((s) => s.count != null
       ? itemRow(s.count, "side", s.name, s.note, "")
