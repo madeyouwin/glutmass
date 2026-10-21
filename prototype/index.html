@@ -1,0 +1,301 @@
+<title>GLUTMASS Grillrechner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap">
+<style>
+/* Layout: Eingaben links, Einkaufsliste als "Theken-Zettel" rechts (sticky); auf dem Handy untereinander. */
+:root{
+  --bg:#F4EEE6; --surface:#FFFDF9; --sunk:#EAE2D7; --fg:#171412; --muted:#6B625A; --line:#DDD3C6;
+  --ember:#E0561A; --ember-ink:#FFFFFF; --amber:#B86E00; --herb:#4F6F22; --herb-bg:#E2EBD3;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --ember:#F2611D; --ember-ink:#171412; --amber:#FFB547; --herb:#9CC25E; --herb-bg:#25301A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171412; --surface:#221E1B; --sunk:#2C2723; --fg:#F6F0E8; --muted:#BDB2A6; --line:#3A332E;
+  --ember:#F2611D; --ember-ink:#171412; --amber:#FFB547; --herb:#9CC25E; --herb-bg:#25301A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:1080px;margin:0 auto}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:28px 20px;border-bottom:3px solid var(--fg)}
+.logo{font-family:var(--display);font-weight:900;font-size:clamp(44px,9vw,72px);line-height:.85;letter-spacing:-.01em;margin:0}
+.logo span{color:var(--ember)}
+.claim{font-family:var(--serif);font-style:italic;font-size:clamp(20px,3.4vw,28px);color:var(--amber);margin:0}
+.proto{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ruler{height:18px;margin-top:6px;background:
+  repeating-linear-gradient(90deg,var(--ember) 0 2px,transparent 2px 60px) top/100% 18px no-repeat,
+  repeating-linear-gradient(90deg,var(--ember) 0 2px,transparent 2px 12px) bottom/100% 8px no-repeat;opacity:.9}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:40px;margin-top:28px;align-items:start}
+@media (max-width:860px){main{grid-template-columns:1fr;gap:28px}}
+h2{font-family:var(--display);font-weight:800;font-size:30px;line-height:1;margin:0 0 4px;text-wrap:balance}
+.lab{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.block{display:flex;flex-direction:column;gap:12px;padding-block:20px;border-bottom:1px solid var(--line)}
+.block:first-child{padding-top:0}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.row .name{font-weight:500}
+.row small{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.step{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px}
+.step button{width:44px;height:44px;border:0;background:none;color:var(--fg);font-size:22px;cursor:pointer;border-radius:999px}
+.step button:hover{background:var(--sunk)}
+.step output{min-width:2.4ch;text-align:center;font-family:var(--display);font-weight:800;font-size:26px;font-variant-numeric:tabular-nums}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--sunk);padding:5px;border-radius:14px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{text-align:center;padding:10px 6px;border-radius:10px;cursor:pointer;font-weight:500;font-size:15px;line-height:1.2}
+.seg label small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.seg input:checked + label{background:var(--surface);box-shadow:0 1px 0 var(--line),0 0 0 1px var(--line)}
+.seg input:focus-visible + label,.chips input:focus-visible + label{outline:2px solid var(--ember);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;font-weight:500;font-size:15px;background:var(--surface)}
+.chips input:checked + label{border-color:var(--ember);background:var(--ember);color:var(--ember-ink)}
+.chips.veg input:checked + label{border-color:var(--herb);background:var(--herb);color:var(--bg)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--ember);outline-offset:2px}
+
+/* Theken-Zettel */
+.slip{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:22px 22px 18px;box-shadow:0 12px 30px -18px rgba(23,20,18,.45)}
+.slip::before{content:"";position:absolute;left:0;right:0;top:-1px;height:6px;background:radial-gradient(circle at 6px 0,var(--bg) 4px,transparent 4.5px) 0 0/12px 6px repeat-x}
+@media (max-width:860px){.slip{position:static}}
+.slip h2{font-size:26px}
+.guests{color:var(--muted);font-size:14px;margin:0 0 14px}
+.items{list-style:none;margin:0;padding:0}
+.items li{display:grid;grid-template-columns:4.2ch 1fr auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line)}
+.items .n{font-family:var(--display);font-weight:900;font-size:28px;line-height:1;text-align:right;color:var(--ember);font-variant-numeric:tabular-nums}
+.items .t{font-weight:500;min-width:0}
+.items .t small{display:block;color:var(--muted);font-weight:400;font-size:13px}
+.items .w{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.items li.veg .n{color:var(--herb)}
+.items li.side .n{color:var(--fg);font-size:22px}
+.sum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px}
+.sum .price{font-family:var(--display);font-weight:900;font-size:40px;line-height:1;color:var(--ember)}
+.sum small{color:var(--muted);font-size:13px}
+.waste{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--herb-bg);color:var(--fg)}
+.waste b{font-family:var(--display);font-weight:900;font-size:30px;color:var(--herb);line-height:1;display:block}
+.waste p{margin:4px 0 0;font-size:14px}
+.share{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;border:0;border-radius:999px;padding:12px 18px;font:700 15px var(--body);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--ember);color:var(--ember-ink)}
+.btn.ghost{background:var(--sunk);color:var(--fg)}
+.toast{font-size:13px;color:var(--herb);font-weight:700;min-height:1.4em;margin:8px 0 0}
+.counter{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.counter strong{color:var(--fg)}
+
+/* Werkstatt */
+details{margin-top:36px;border-top:3px solid var(--fg);padding-top:14px}
+summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:26px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:" +";color:var(--ember)}
+details[open] summary::after{content:" –"}
+.intro{max-width:65ch;color:var(--muted)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+td input{width:6.5em;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:500 15px var(--body);font-variant-numeric:tabular-nums}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+footer{margin-top:40px;font-size:13px;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <p class="logo">GLUT<span>MASS</span></p>
+    <div class="ruler" aria-hidden="true"></div>
+  </div>
+  <div style="text-align:right">
+    <p class="claim">Richtig rechnen. Satt grillen.</p>
+    <span class="proto">Prototyp · Oktober 2026</span>
+  </div>
+</header>
+
+<main>
+<section aria-label="Eingaben">
+  <div class="block">
+    <p class="lab">Gäste</p>
+    <div class="row"><span class="name">Erwachsene</span>
+      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><output id="adults">8</output><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div></div>
+    <div class="row"><span class="name">Kinder<small>bis 12 Jahre</small></span>
+      <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><output id="kids">4</output><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div></div>
+    <div class="row"><span class="name">davon vegetarisch<small>Erwachsene ohne Fleisch</small></span>
+      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><output id="veg">2</output><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div></div>
+  </div>
+
+  <div class="block">
+    <p class="lab">Hunger</p>
+    <div class="seg" role="radiogroup">
+      <input type="radio" name="hunger" id="h1" value="0.8"><label for="h1">Wenig<small>Kleine Esser</small></label>
+      <input type="radio" name="hunger" id="h2" value="1" checked><label for="h2">Normal<small>Gemischte Runde</small></label>
+      <input type="radio" name="hunger" id="h3" value="1.25"><label for="h3">Groß<small>Bärenhunger</small></label>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="lab">Anlass</p>
+    <div class="seg" role="radiogroup">
+      <input type="radio" name="anlass" id="a1" value="0.85"><label for="a1">Feierabend<small>2–3 Stunden</small></label>
+      <input type="radio" name="anlass" id="a2" value="1" checked><label for="a2">Party<small>4–5 Stunden</small></label>
+      <input type="radio" name="anlass" id="a3" value="1.3"><label for="a3">Ganztags<small>Sommerfest</small></label>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="lab">Beilagen</p>
+    <div class="seg" role="radiogroup">
+      <input type="radio" name="beil" id="b1" value="1.12"><label for="b1">Wenig<small>Brot & Senf</small></label>
+      <input type="radio" name="beil" id="b2" value="1" checked><label for="b2">Normal<small>2–3 Salate</small></label>
+      <input type="radio" name="beil" id="b3" value="0.85"><label for="b3">Viel<small>Buffet</small></label>
+    </div>
+  </div>
+
+  <div class="block">
+    <p class="lab">Auf den Grill</p>
+    <div class="chips" id="meatChips"></div>
+    <p class="lab" style="margin-top:6px">Vegetarisch</p>
+    <div class="chips veg" id="vegChips"></div>
+  </div>
+</section>
+
+<aside class="slip" aria-live="polite">
+  <p class="lab">Deine Einkaufsliste</p>
+  <h2 id="slipTitle">Grillparty für 12</h2>
+  <p class="guests" id="guestLine"></p>
+  <ul class="items" id="items"></ul>
+  <div class="sum"><small>Grillgut geschätzt<br>Richtwerte, Theke kann abweichen</small><span class="price" id="price">–</span></div>
+  <div class="waste" id="waste"></div>
+  <div class="share">
+    <button type="button" class="btn primary" id="copyBtn">Liste kopieren</button>
+    <a class="btn ghost" id="waBtn" href="#" target="_blank" rel="noopener">Per WhatsApp teilen</a>
+  </div>
+  <p class="toast" id="toast" role="status"></p>
+  <div class="counter">Gemeinsamer Zähler: <strong>startet mit dem Launch</strong>. Er addiert nur die Summe „weniger eingekauft“, ohne Personendaten.</div>
+</aside>
+</main>
+
+<details id="werkstatt">
+  <summary>Werkstatt: Annahmen prüfen</summary>
+  <p class="intro">Hier stehen alle Werte, mit denen GLUTMASS rechnet. Ändere sie aus deiner Thekenerfahrung – die Liste oben rechnet sofort neu. Deine Änderungen bleiben in diesem Browser gespeichert. Mit „Werte kopieren“ schickst du sie mir zurück.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Artikel</th><th>Stückgewicht (g)</th><th>Anteil am Fleisch (%)</th><th>Preis (€/kg)</th></tr></thead>
+    <tbody id="cfgItems"></tbody>
+  </table></div>
+  <div class="tw" style="margin-top:18px"><table>
+    <thead><tr><th>Grundwert</th><th>Wert</th><th>Erklärung</th></tr></thead>
+    <tbody id="cfgBase"></tbody>
+  </table></div>
+  <div class="tools">
+    <button type="button" class="btn ghost" id="cfgCopy">Werte kopieren</button>
+    <button type="button" class="btn ghost" id="cfgReset">Auf Standard zurücksetzen</button>
+  </div>
+  <p class="toast" id="cfgToast" role="status"></p>
+</details>
+
+<footer>Prototyp zum Testen. Alles wird direkt in deinem Browser gerechnet, keine Eingabe verlässt das Gerät. Mengen und Preise sind vorläufige Richtwerte. Vergleichsbasis für „weniger eingekauft“: die verbreitete Faustregel von 400 g Fleisch pro Erwachsenem und 150 g pro Kind.</footer>
+</div>
+
+<script>
+const DEFAULTS={
+  items:[
+    {id:"wurst",name:"Bratwurst",note:"grob, ca. 100 g",piece:100,share:35,price:9,veg:false,on:true,kids:true},
+    {id:"nacken",name:"Nackensteak",note:"Schwein, mariniert",piece:200,share:30,price:10,veg:false,on:true},
+    {id:"haehnchen",name:"Hähnchenspieß",note:"Brustfilet",piece:150,share:20,price:14,veg:false,on:true},
+    {id:"rumpsteak",name:"Rumpsteak",note:"Rind, 2,5 cm dick",piece:250,share:15,price:29,veg:false,on:false},
+    {id:"bauch",name:"Bauchscheiben",note:"Schwein",piece:120,share:15,price:9,veg:false,on:false},
+    {id:"grillkaese",name:"Grillkäse",note:"Halloumi o. ä.",piece:100,share:50,price:17,veg:true,on:true},
+    {id:"gemuese",name:"Gemüsespieß",note:"Paprika, Zucchini, Pilze",piece:150,share:50,price:6,veg:true,on:true}
+  ],
+  base:{adult:300,kid:120,vegP:250,bread:1.5,breadKid:1,salad:150,sauce:50,ruleAdult:400,ruleKid:150}
+};
+const BASE_INFO={adult:["Fleisch pro Erwachsenem (g, roh)","bei normalem Hunger, Party, normalen Beilagen"],kid:["Fleisch pro Kind (g)","wird als Bratwurst gerechnet"],vegP:["Vegetarisch pro Person (g)","Grillkäse und Gemüse zusammen"],bread:["Brötchen pro Erwachsenem","oder 2 Scheiben Baguette"],breadKid:["Brötchen pro Kind",""],salad:["Salat pro Person (g)","angepasst an die Beilagen-Wahl"],sauce:["Saucen & Dips pro Person (ml)",""],ruleAdult:["Faustregel Erwachsene (g)","Vergleichsbasis Food Waste"],ruleKid:["Faustregel Kinder (g)","Vergleichsbasis Food Waste"]};
+
+let cfg=load();
+const st={adults:8,kids:4,veg:2};
+function load(){try{const s=JSON.parse(localStorage.getItem("glutmass-cfg"));if(s&&s.items&&s.base)return s}catch(e){}return structuredClone(DEFAULTS)}
+function save(){try{localStorage.setItem("glutmass-cfg",JSON.stringify(cfg))}catch(e){}}
+const $=id=>document.getElementById(id);
+const fmtKg=g=>(g/1000).toLocaleString("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1})+" kg";
+const fmtEur=e=>e.toLocaleString("de-DE",{maximumFractionDigits:0})+" €";
+const radio=n=>parseFloat(document.querySelector(`input[name=${n}]:checked`).value);
+
+function renderChips(){
+  for(const [box,veg] of [["meatChips",false],["vegChips",true]]){
+    $(box).innerHTML=cfg.items.filter(i=>i.veg===veg).map(i=>`<input type="checkbox" id="c-${i.id}" ${i.on?"checked":""}><label for="c-${i.id}">${i.name}</label>`).join("");
+  }
+  cfg.items.forEach(i=>{$("c-"+i.id).onchange=e=>{i.on=e.target.checked;save();calc()}});
+}
+
+function calc(){
+  const b=cfg.base, A=st.adults, K=st.kids, V=Math.min(st.veg,A), M=A-V;
+  const f=radio("hunger")*radio("anlass")*radio("beil");
+  const meat=cfg.items.filter(i=>!i.veg&&i.on), vegs=cfg.items.filter(i=>i.veg&&i.on);
+  const kidItem=meat.find(i=>i.kids)||meat[0];
+  const lines=[]; let price=0, grill=0;
+  // Fleisch Erwachsene
+  const meatG=M*b.adult*f, shareSum=meat.reduce((s,i)=>s+i.share,0)||1;
+  meat.forEach(i=>{
+    let g=meatG*i.share/shareSum; if(i===kidItem) g+=K*b.kid*radio("hunger")*radio("anlass");
+    const n=g>0?Math.max(1,Math.round(g/i.piece)):0; if(!n) return;
+    const real=n*i.piece; lines.push({n,name:i.name,note:i.note+" · à "+i.piece+" g",w:real,veg:false}); price+=real/1000*i.price; grill+=real;
+  });
+  if(!meat.length&&K>0){lines.push({n:"!",name:"Kein Fleisch gewählt",note:"Kinder werden nicht berücksichtigt",w:0})}
+  // Vegetarisch
+  const vegG=V*b.vegP*f, vSum=vegs.reduce((s,i)=>s+i.share,0)||1;
+  vegs.forEach(i=>{const g=vegG*i.share/vSum;const n=g>0?Math.max(1,Math.round(g/i.piece)):0;if(!n)return;const real=n*i.piece;lines.push({n,name:i.name,note:i.note+" · à "+i.piece+" g",w:real,veg:true});price+=real/1000*i.price;grill+=real;});
+  // Beilagen
+  const beilF=radio("beil")>1?0.7:radio("beil")<1?1.35:1;
+  const bread=Math.ceil(A*b.bread+K*b.breadKid), salad=Math.round((A+K)*b.salad*beilF/100)*100, sauce=Math.round((A+K)*b.sauce/50)*50;
+  if(A+K>0){
+    lines.push({n:bread,name:"Brötchen",note:"oder Baguette, 2 Scheiben je Brötchen",w:null,side:true});
+    lines.push({n:"",name:"Salat",note:"gesamt, z. B. Kartoffel- und Nudelsalat",w:salad,side:true,txt:fmtKg(salad)});
+    lines.push({n:"",name:"Saucen & Dips",note:"Ketchup, Senf, Kräuterquark",w:null,side:true,txt:(sauce/1000).toLocaleString("de-DE")+" l"});
+  }
+  // Render
+  const total=A+K;
+  $("slipTitle").textContent=total?`Grillparty für ${total}`:"Wer kommt?";
+  $("guestLine").textContent=total?`${A} Erwachsene${V?` (davon ${V} vegetarisch)`:""} · ${K} ${K===1?"Kind":"Kinder"}`:"Gib oben die Gäste ein.";
+  $("items").innerHTML=lines.map(l=>`<li class="${l.veg?"veg":""} ${l.side?"side":""}"><span class="n">${l.side&&l.txt?"":l.n}</span><span class="t">${l.side&&l.txt?`${l.txt} ${l.name}`:l.name}<small>${l.note}</small></span><span class="w">${l.w&&!l.side?fmtKg(l.w):""}</span></li>`).join("");
+  $("price").textContent=grill?"≈ "+fmtEur(price):"–";
+  // Food waste
+  const rule=M*b.ruleAdult+K*b.ruleKid+V*b.ruleAdult*0.75;
+  const diff=rule-grill, avg=grill?price/(grill/1000):0;
+  if(total&&diff>=100){
+    $("waste").innerHTML=`<b>${fmtKg(diff)} weniger</b><p>eingekauft als nach der 400‑g‑Faustregel. Das sind rund ${fmtEur(diff/1000*avg)}, die nicht im Müll landen.</p>`;
+  }else if(total){
+    $("waste").innerHTML=`<b>Passt.</b><p>Bei so viel Hunger liegt die Liste auf Höhe der Faustregel. Reste lassen sich gut einfrieren.</p>`;
+  }else $("waste").innerHTML="";
+  // Share text
+  const txt=`GLUTMASS-Einkaufsliste – Grillparty für ${total}\n`+lines.map(l=>"• "+(l.txt?`${l.txt} ${l.name}`:`${l.n} × ${l.name}`)).join("\n")+(diff>=100?`\n\n${fmtKg(diff)} weniger eingekauft als nach Faustregel.`:"")+`\nglutmass.de`;
+  window._share=txt; $("waBtn").href="https://wa.me/?text="+encodeURIComponent(txt);
+}
+
+function copy(text,toastId,msg){
+  const done=()=>{$(toastId).textContent=msg;setTimeout(()=>$(toastId).textContent="",2500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,()=>fallback(text,done))}else fallback(text,done);
+}
+function fallback(text,done){const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();try{document.execCommand("copy");done()}catch(e){}t.remove()}
+
+function renderCfg(){
+  $("cfgItems").innerHTML=cfg.items.map((i,k)=>`<tr><td>${i.name}${i.veg?' <small style="color:var(--herb)">veg.</small>':""}</td>
+    <td><input type="number" min="20" step="10" id="p-${i.id}" value="${i.piece}" data-k="${k}" data-f="piece"></td>
+    <td><input type="number" min="0" step="5" id="s-${i.id}" value="${i.share}" data-k="${k}" data-f="share"></td>
+    <td><input type="number" min="0" step="0.5" id="e-${i.id}" value="${i.price}" data-k="${k}" data-f="price"></td></tr>`).join("");
+  $("cfgBase").innerHTML=Object.keys(BASE_INFO).map(k=>`<tr><td>${BASE_INFO[k][0]}</td><td><input type="number" min="0" step="${k.startsWith("bread")?0.5:10}" id="b-${k}" value="${cfg.base[k]}" data-b="${k}"></td><td style="color:var(--muted)">${BASE_INFO[k][1]}</td></tr>`).join("");
+  document.querySelectorAll("#werkstatt input").forEach(inp=>inp.oninput=()=>{const v=parseFloat(inp.value);if(isNaN(v))return;
+    if(inp.dataset.b)cfg.base[inp.dataset.b]=v;else cfg.items[+inp.dataset.k][inp.dataset.f]=v;save();calc()});
+}
+
+document.querySelectorAll("[data-step]").forEach(btn=>btn.onclick=()=>{
+  const k=btn.dataset.step;st[k]=Math.max(0,Math.min(99,st[k]+ +btn.dataset.d));
+  if(k==="veg")st.veg=Math.min(st.veg,st.adults); if(k==="adults"&&st.veg>st.adults)st.veg=st.adults;
+  ["adults","kids","veg"].forEach(x=>$(x).textContent=st[x]);calc()});
+document.querySelectorAll(".seg input").forEach(r=>r.onchange=calc);
+$("copyBtn").onclick=()=>copy(window._share,"toast","Liste kopiert.");
+$("cfgCopy").onclick=()=>copy(JSON.stringify(cfg,null,1),"cfgToast","Werte kopiert – einfach in den Chat einfügen.");
+$("cfgReset").onclick=()=>{cfg=structuredClone(DEFAULTS);save();renderChips();renderCfg();calc();$("cfgToast").textContent="Standardwerte wiederhergestellt."};
+renderChips();renderCfg();calc();
+</script>
