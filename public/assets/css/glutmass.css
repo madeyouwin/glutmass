@@ -51,41 +51,38 @@ button:focus-visible,summary:focus-visible,a:focus-visible,input:focus-visible{o
 @media (min-width:861px){.wrap{padding-inline:8px}}
 
 /* Kopf: eigener Bereich auf der Kohle, über dem Teller */
-.top{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr auto;align-items:start;gap:6px 16px;
+.top{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr;align-items:start;gap:6px 16px;
   padding:10px 4px 16px;color:var(--band-fg)}
 @media (min-width:861px){.top{padding:4px 8px 24px}}
 .brand{text-decoration:none;display:block;width:max-content;max-width:100%}
 .logo{font-family:var(--display);font-weight:900;font-size:clamp(38px,7vw,64px);line-height:.85;letter-spacing:-.01em;margin:0;color:var(--band-fg)}
 .logo span{color:var(--logo-mass)}
-/* Maßband: 20 Felder über die volle Wortbreite, langer Strich alle 5, Schlussstrich bündig rechts */
-.ruler{--t:var(--ruler);height:14px;margin-top:6px;background:
-  linear-gradient(var(--t),var(--t)) right top/2px 100% no-repeat,
-  linear-gradient(90deg,var(--t) 0 2px,transparent 2px) left top/25% 100% repeat-x,
-  linear-gradient(90deg,var(--t) 0 2px,transparent 2px) left bottom/5% 43% repeat-x}
+/* Maßband: 21 echte Striche, gleichmäßig verteilt (keine gerundeten Hintergrund-Kacheln), langer Strich alle 5 */
+.ruler{display:flex;justify-content:space-between;align-items:flex-end;height:14px;margin-top:6px}
+.ruler i{display:block;width:2px;height:6px;background:var(--ruler);flex:none}
+.ruler i:nth-child(5n+1){height:100%}
 .top-r{display:contents}
 .claim{grid-column:1/-1;grid-row:2;font-family:var(--serif);font-style:italic;font-size:clamp(18px,2.4vw,26px);color:var(--claim);margin:2px 0 0;line-height:1.1}
-.nav{grid-column:2;grid-row:1;display:flex;gap:6px;font-size:14px;font-weight:500;margin-top:6px}
-.nav a{text-decoration:none;padding:5px 12px;border-radius:999px;color:var(--fg);background:var(--surface);border:1px solid var(--line)}
-.nav a:hover{color:var(--fg);border-color:var(--herb)}
-.nav a[aria-current="page"]{background:var(--herb);color:var(--herb-ink);border-color:var(--herb)}
 
-/* Food Waste: eigener Bereich zwischen Kopf und Rechner */
-.fw{max-width:1240px;margin:0 auto 4px;box-shadow:0 18px 40px -24px rgba(47,66,20,.55);padding:18px var(--fwpad,18px) 16px;border-radius:20px;background:var(--herb);color:var(--herb-ink)}
-@media (min-width:861px){.fw{--fwpad:36px;border-radius:28px;padding-block:28px 24px;margin-bottom:20px}}
-.fw-title{font-family:var(--display);font-weight:900;font-size:clamp(30px,6vw,56px);line-height:.95;margin:0 0 8px;color:inherit}
-.fw-text{margin:0;max-width:68ch;font-size:15px;line-height:1.45}
-@media (min-width:700px){.fw-text{font-size:17px}}
-.fw-facts{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:8px}
-@media (min-width:700px){.fw-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
-.fw-facts li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;align-items:baseline;padding-top:8px;border-top:1px solid color-mix(in srgb,currentColor 35%,transparent)}
-@media (min-width:700px){.fw-facts li{grid-template-columns:1fr;gap:4px}}
-.fw-facts b{font-family:var(--display);font-weight:900;font-size:26px;line-height:1;white-space:nowrap}
-@media (min-width:700px){.fw-facts b{font-size:36px}}
-.fw-facts span{font-size:14px;line-height:1.4}
-.fw-facts small{display:block;font-size:12px;opacity:.8;margin-top:2px}
-.fw-more{margin:12px 0 0;font-size:14px;font-weight:500}
+/* Food Waste: kompakter Hinweis zwischen Kopf und Rechner, Details auf eigener Seite */
+.fw{max-width:1240px;margin:0 auto 4px;padding:12px 18px;border-radius:16px;background:var(--herb);color:var(--herb-ink);
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 16px}
+@media (min-width:861px){.fw{padding:14px 28px;border-radius:20px}}
+.fw-title{font-family:var(--display);font-weight:900;font-size:clamp(24px,4vw,34px);line-height:1;margin:0;color:inherit}
+.fw-more{margin:0;font-size:14px;font-weight:700}
+.fw-more a::after{content:" →"}
 .fw a{color:inherit;text-decoration-color:currentColor}
 .fw a:hover{color:inherit;opacity:.85}
+
+/* Infoseite Food Waste */
+.lead-big{font-size:18px;line-height:1.5}
+.facts{list-style:none;padding:0!important;margin:12px 0 6px;display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:700px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.facts li{background:var(--herb);color:var(--herb-ink);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;max-width:none}
+.facts b{font-family:var(--display);font-weight:900;font-size:34px;line-height:1}
+.facts span{font-size:14px;line-height:1.4}
+.cta{margin-top:28px}
+.cta .btn{text-decoration:none}
 
 /* Rechner */
 .calc{display:grid;grid-template-columns:1fr;gap:20px;padding-top:14px;align-items:start}
@@ -241,7 +238,8 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
 @media (max-width:599px){
   .logo{font-size:40px}
   .ruler{height:12px}
-  .nav{flex-direction:column;gap:4px;align-items:stretch;font-size:13px;text-align:center;margin-top:0}
+  .ruler i{height:5px}
+  .ruler i:nth-child(5n+1){height:100%}
   .lead{display:none}
   .guests-set .row small{display:none}
 }
