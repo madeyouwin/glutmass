@@ -6,7 +6,7 @@ import {
 
 const CFG_KEY = "glutmass-annahmen";      // localStorage, nur wenn eigene Annahmen gesetzt sind
 const COUNTED_KEY = "glutmass-gezaehlt";  // sessionStorage, Sperre gegen Mehrfachzaehlung
-const COUNTER_URL = "/api/zaehler.php";
+const COUNTER_URL = "/api/zaehler";
 
 const BASE_INFO = {
   adult: ["Fleisch pro Erwachsenem (g, roh)", "bei normalem Hunger, Party, normalen Beilagen"],

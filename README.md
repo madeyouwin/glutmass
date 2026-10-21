@@ -7,30 +7,30 @@ Grillgut-Rechner für glutmass.de: sagt in Stückzahlen, was für eine Grillpart
 ## Aufbau
 
 ```
-public/                  wird 1:1 auf den Strato-Webspace geladen
+public/                  statische Seite, wird von Vercel 1:1 ausgeliefert
   index.html             Rechner
   so-rechnen-wir.html    offene Methode (Pflicht wegen UWG/EmpCo)
   datenschutz.html       Datenschutzerklärung
-  404.html, robots.txt, favicon.svg, .htaccess
+  404.html, robots.txt, favicon.svg
   assets/css/            Stylesheet (CI-Farben, hell/dunkel)
   assets/js/calc.js      Rechenlogik, reine Funktionen
   assets/js/app.js       Oberfläche
   assets/fonts/          lokale Schriften (woff2, SIL OFL)
-  api/zaehler.php        gemeinsamer Zähler (anonyme Summe)
-  api/data/              Zählerdatei, per .htaccess gesperrt, nicht im Repo
+api/zaehler.js           gemeinsamer Zähler (Vercel Function, Upstash Redis)
+vercel.json              Ausgabeordner, Region fra1, Sicherheits-Header
 tests/                   node --test
 prototype/               ursprünglicher Klick-Prototyp (Oktober 2026)
 ```
 
 ## Entwickeln
 
-Statische Seite, kein Build. Zum Ansehen einen beliebigen lokalen Webserver auf `public/` richten, z. B.:
+Statische Seite, kein Build. Mit der Vercel CLI läuft alles lokal inklusive Zähler:
 
 ```bash
-php -S localhost:8000 -t public
+npx vercel dev
 ```
 
-Mit PHP läuft auch der Zähler. Ohne PHP (z. B. `npx serve public`) zeigt der Rechner „Zähler gerade nicht erreichbar“, alles andere funktioniert.
+Ohne Speicher-Variablen zeigt der Rechner „Zähler gerade nicht erreichbar“, alles andere funktioniert. Nur die Seite ansehen geht auch mit `npx serve public`.
 
 Tests (Node 20+):
 
@@ -44,13 +44,8 @@ Nach Änderungen an CSS/JS die Versionsnummer `?v=N` in den HTML-Dateien (und im
 
 ## Deployment
 
-GitHub Actions (`.github/workflows/deploy.yml`) testet bei jedem Push und lädt bei Push auf `main` den Ordner `public/` per SFTP hoch. Dafür unter **Settings → Secrets and variables → Actions** anlegen:
+Vercel ist mit diesem Repository verbunden: Jeder Push auf `main` geht automatisch live, Pull Requests bekommen eine Vorschau. GitHub Actions (`.github/workflows/tests.yml`) führt parallel die Tests aus.
 
-| Secret | Beispiel |
-| --- | --- |
-| `SFTP_HOST` | `ssh.strato.de` |
-| `SFTP_USER` | SFTP-Benutzer aus dem Strato-Kundenbereich |
-| `SFTP_PASSWORD` | zugehöriges Passwort |
-| `SFTP_PATH` | Zielordner der Domain, z. B. `/` oder `/glutmass` |
+Der Zähler braucht Upstash Redis aus dem Vercel Marketplace (Region Frankfurt). Die Integration setzt `KV_REST_API_URL` und `KV_REST_API_TOKEN` (oder `UPSTASH_REDIS_REST_URL`/`_TOKEN`) selbst.
 
-Solange die Secrets fehlen, wird das Deployment mit einer Warnung übersprungen. Auf dem Server wird nichts gelöscht, und die Zählerdatei wird nie überschrieben.
+Die Domain bleibt bei Strato. Dort zeigen nur A-Record und www-CNAME auf Vercel; die MX-Records für das Postfach bleiben unverändert.
