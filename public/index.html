@@ -15,8 +15,8 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=3">
-<script type="module" src="/assets/js/app.js?v=3"></script>
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=4">
+<script type="module" src="/assets/js/app.js?v=4"></script>
 </head>
 <body>
 <a class="skip" href="#rechner">Zum Rechner springen</a>
@@ -35,18 +35,7 @@
   </div>
 </header>
 
-<section class="fw-band" aria-labelledby="fwTitle">
-  <div class="fw-text">
-    <h2 id="fwTitle">Kauf, was gegessen wird.</h2>
-    <p>74,5 kg Lebensmittel wirft jeder Mensch in Deutschland pro Jahr zu Hause weg. GLUTMASS rechnet deine Grillparty so knapp, dass alle satt werden – und nicht mehr.</p>
-    <p class="fw-src">Quelle: <a href="https://www.bmleh.de/DE/themen/ernaehrung/lebensmittelverschwendung/studie-lebensmittelabfaelle-deutschland.html" rel="noopener noreferrer" target="_blank">BMLEH, Bezugsjahr 2022</a></p>
-  </div>
-  <a class="fw-count" id="counter" href="/so-rechnen-wir.html#zaehler">
-    <span class="fw-count-lab">Gemeinsam</span>
-    <strong id="counterKg">…</strong>
-    <span id="counterNote">weniger eingekauft</span>
-  </a>
-</section>
+<p class="fw-band">Kauf, was gegessen wird.</p>
 
 <main id="rechner" class="calc">
 <section aria-labelledby="calcTitle">
@@ -110,8 +99,9 @@
   </div>
 </section>
 
-<aside class="slip" id="liste" aria-labelledby="slipTitle">
-  <p class="lab">Deine Einkaufsliste</p>
+<aside class="slip-wrap" id="liste" aria-labelledby="slipTitle">
+<div class="slip">
+  <p class="lab">Einkaufszettel</p>
   <h2 id="slipTitle">Grillparty</h2>
   <p class="guests" id="guestLine"></p>
   <ul class="items" id="items"></ul>
@@ -123,7 +113,7 @@
       <div class="bar ours"><span class="bar-name">GLUTMASS</span><span class="bar-fill" id="barOurs"><b id="kgOurs"></b></span></div>
     </div>
     <p class="less"><b id="lessKg"></b> <span id="lessText"></span></p>
-    <a class="waste-link" href="/so-rechnen-wir.html#vergleich">Wie wir vergleichen</a>
+    <p class="counter">Alle zusammen: <strong id="counterKg">…</strong> <span id="counterNote">weniger eingekauft</span> · <a id="counter" href="/so-rechnen-wir.html#zaehler">Wie wir zählen</a></p>
   </div>
   <div class="share">
     <button type="button" class="btn primary" id="copyBtn">Liste kopieren</button>
@@ -135,14 +125,9 @@
     <dl id="resteList"></dl>
   </details>
   <p class="sr" id="summary" role="status"></p>
+</div>
 </aside>
 </main>
-
-<div class="sticky" id="sticky" aria-hidden="true">
-  <span class="sticky-less" id="stickyLess"></span>
-  <span class="sticky-txt"><small id="stickyMeta"></small><strong id="stickyPrice"></strong></span>
-  <a class="btn primary" href="#liste" tabindex="-1">Liste ↓</a>
-</div>
 
 <details class="tune" id="annahmen">
   <summary>Eigene Annahmen</summary>

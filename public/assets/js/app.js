@@ -125,7 +125,6 @@ function update() {
 
   renderWaste(r);
   renderLeftovers(r);
-  renderSticky(r);
 
   $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(shareText(r));
   $("summary").textContent = g.total ? `Liste aktualisiert: ${r.lines.length} Grillartikel für ${g.total} Gäste.` : "";
@@ -160,14 +159,6 @@ function renderLeftovers(r) {
   $("resteList").replaceChildren(...[...rows, LEFTOVER_ALL].flatMap(([k, v]) => [el("dt", null, k), el("dd", null, v)]));
 }
 
-function renderSticky(r) {
-  const g = r.guests;
-  const pieces = r.lines.reduce((n, l) => n + l.count, 0);
-  $("stickyLess").textContent = r.lessGrams ? `−${fmtKg(r.lessGrams)}` : "";
-  $("stickyMeta").textContent = g.total ? `${g.total} ${g.total === 1 ? "Gast" : "Gäste"} · ${pieces} Teile vom Grill` : "Wer kommt?";
-  $("stickyPrice").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "–";
-}
-
 function toast(id, msg) {
   $(id).textContent = msg;
   clearTimeout(toast[id]);
@@ -195,11 +186,10 @@ async function copyText(text) {
 // --- Gemeinsamer Zaehler ---------------------------------------------------
 function showCounter(data) {
   const kg = $("counterKg"), note = $("counterNote");
-  if (!data) { kg.textContent = "–"; note.textContent = "Zähler gerade aus"; return; }
-  if (!data.listen) { kg.textContent = "0 kg"; note.textContent = "Start mit deiner Liste"; return; }
-  kg.textContent = fmtKg(data.gramm).replace(",0 kg", " kg");
-  note.textContent = `weniger auf ${data.listen.toLocaleString("de-DE")} ${data.listen === 1 ? "Liste" : "Listen"}`;
-  $("counter").setAttribute("aria-label", `Gemeinsamer Zähler: ${fmtKg(data.gramm)} weniger eingekauft auf ${data.listen} geteilten Listen. Wie wir zählen.`);
+  if (!data) { kg.textContent = "–"; note.textContent = "(Zähler gerade nicht erreichbar)"; return; }
+  if (!data.listen) { kg.textContent = "0 kg"; note.textContent = "– deine Liste ist die erste"; return; }
+  kg.textContent = `${fmtKg(data.gramm)} weniger`;
+  note.textContent = `auf ${data.listen.toLocaleString("de-DE")} geteilten ${data.listen === 1 ? "Liste" : "Listen"}`;
 }
 
 async function loadCounter() {
@@ -297,9 +287,3 @@ renderChips();
 renderConfig();
 update();
 loadCounter();
-
-// Ergebnis-Leiste nur zeigen, solange der Einkaufszettel nicht im Bild ist.
-const sticky = $("sticky");
-if ("IntersectionObserver" in window) {
-  new IntersectionObserver(([e]) => sticky.classList.toggle("off", e.isIntersecting), { threshold: 0.15 }).observe($("liste"));
-}
