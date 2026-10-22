@@ -24,8 +24,8 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=11">
-<script type="module" src="/assets/js/app.js?v=7"></script>
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=14">
+<script type="module" src="/assets/js/app.js?v=9"></script>
 </head>
 <body>
 <a class="skip" href="#rechner">Zum Rechner springen</a>
@@ -56,18 +56,19 @@
     <legend><span class="stepnum" aria-hidden="true">1</span>Gäste</legend>
     <div class="guests-set">
     <div class="row" role="group" aria-labelledby="l-adults">
-      <span class="name" id="l-adults">Erwachsene</span>
-      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene">−</button><input class="count" id="adults" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-adults"><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene">+</button></div>
+      <span class="name" id="l-adults">Mit Fleisch<small>Erwachsene</small></span>
+      <div class="step"><button type="button" data-step="adults" data-d="-1" aria-label="Weniger Erwachsene mit Fleisch">−</button><input class="count" id="adults" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-adults"><button type="button" data-step="adults" data-d="1" aria-label="Mehr Erwachsene mit Fleisch">+</button></div>
+    </div>
+    <div class="row" role="group" aria-labelledby="l-veg">
+      <span class="name" id="l-veg">Vegetarisch<small>Erwachsene</small></span>
+      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger vegetarische Erwachsene">−</button><input class="count" id="veg" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-veg"><button type="button" data-step="veg" data-d="1" aria-label="Mehr vegetarische Erwachsene">+</button></div>
     </div>
     <div class="row" role="group" aria-labelledby="l-kids">
       <span class="name" id="l-kids">Kinder<small>bis 12 Jahre</small></span>
       <div class="step"><button type="button" data-step="kids" data-d="-1" aria-label="Weniger Kinder">−</button><input class="count" id="kids" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-kids"><button type="button" data-step="kids" data-d="1" aria-label="Mehr Kinder">+</button></div>
     </div>
-    <div class="row" role="group" aria-labelledby="l-veg">
-      <span class="name" id="l-veg">Vegetarier<small>von den Erwachsenen</small></span>
-      <div class="step"><button type="button" data-step="veg" data-d="-1" aria-label="Weniger Vegetarier">−</button><input class="count" id="veg" type="number" inputmode="numeric" pattern="[0-9]*" min="0" max="99" value="0" aria-labelledby="l-veg"><button type="button" data-step="veg" data-d="1" aria-label="Mehr Vegetarier">+</button></div>
     </div>
-    </div>
+    <p class="hint">Jeder Gast zählt einmal. Jugendliche ab 13 zählst du als Erwachsene. Zahlen kannst du antippen und eintippen.</p>
   </fieldset>
 
   <div class="block runde" role="group" aria-labelledby="rundeTitle">
@@ -98,26 +99,31 @@
     </fieldset>
   </div>
 
-  <div class="block">
+  <div class="block" role="group" aria-labelledby="grillTitle">
+    <p class="step-title" id="grillTitle"><span class="stepnum" aria-hidden="true">3</span>Auf den Grill</p>
+    <div id="grillGroups" class="groups"></div>
+  </div>
+
+  <div class="block" role="group" aria-labelledby="drinkTitle">
+    <p class="step-title" id="drinkTitle"><span class="stepnum" aria-hidden="true">4</span>Getränke</p>
     <fieldset>
-      <legend><span class="stepnum" aria-hidden="true">3</span>Auf den Grill</legend>
-      <div class="chips" id="meatChips"></div>
+      <legend class="sr">Getränke auswählen</legend>
+      <div class="chips drink" id="drinkChips"></div>
     </fieldset>
-    <fieldset>
-      <legend class="chips-lab">Vegetarisch</legend>
-      <div class="chips veg" id="vegChips"></div>
-    </fieldset>
+    <p class="hint">Mengen für die ganze Runde, abhängig von der Dauer. Ohne Auswahl bleiben Getränke von der Liste.</p>
     <a class="jump" id="jump" href="#liste" hidden>Zur Einkaufsliste ↓</a>
   </div>
 </section>
 
 <aside class="slip-wrap" id="liste" aria-labelledby="slipTitle">
 <div class="slip">
+  <p class="print-only print-brand">GLUTMASS · glutmass.de</p>
   <p class="lab">Deine Einkaufsliste</p>
   <h2 id="slipTitle">Grillparty</h2>
   <p class="guests" id="guestLine"></p>
   <ul class="items" id="items"></ul>
-  <div class="sum"><small>Grillgut geschätzt<br>Richtwerte, Theke kann abweichen</small><span class="price" id="price">–</span></div>
+  <div class="sum"><small id="priceNote">Richtpreis gesamt<br>Theke und Markt können abweichen</small><span class="price" id="price"></span></div>
+  <p class="pp" id="perPerson" hidden></p>
   <div class="waste" id="waste" hidden>
     <p class="lab">Grillgut im Vergleich</p>
     <div class="bars">
@@ -130,6 +136,7 @@
   <div class="share">
     <button type="button" class="btn primary" id="copyBtn">Liste kopieren</button>
     <a class="btn ghost" id="waBtn" href="https://wa.me/" target="_blank" rel="noopener noreferrer">Per WhatsApp teilen</a>
+    <button type="button" class="btn ghost" id="printBtn">Drucken / PDF</button>
   </div>
   <p class="toast" id="toast" role="status"></p>
   <details class="reste" id="reste" hidden>

@@ -36,11 +36,14 @@ Der Rechner sagt in **Stückzahlen** (nicht Gramm), was man für eine Grillparty
 - Faktoren: Hunger 0,8 / 1 / 1,25 · Anlass 0,85 / 1 / 1,3 · Beilagen wenig 1,12 / normal 1 / viel 0,85.
 - Kinder (bis 12): 120 g, Bratwurst und Hähnchenspieß 70 : 30 (ohne Beilagen-Faktor). Fehlt eins davon, bekommt das andere alles; fehlen beide, das erste gewählte Fleisch.
 - Vegetarier: 250 g Grillkäse + Gemüsespieß (50/50).
-- Stückgewichte: Bratwurst 100 g, Nackensteak 200 g, Hähnchenspieß 150 g, Rumpsteak 250 g, Bauchscheiben 120 g, Grillkäse 100 g, Gemüsespieß 150 g.
+- Stückgewichte: Bratwurst 100 g, Nackensteak 200 g, Hähnchenspieß 150 g, Rumpsteak 250 g, Bauchscheiben 120 g, Grillkäse 100 g, Gemüsespieß 150 g. Seit 22.10.2026 zusätzlich (Marc): Rind – Hüftsteak 200 g, Entrecôte 300 g, Burger-Patty 150 g; Lamm – Lammkotelett 80 g, Merguez 70 g; Fisch – Lachsfilet 150 g, Garnelenspieß 100 g, Forelle 300 g. Auswahl gruppiert (Schwein & Geflügel, Rind, Lamm, Fisch, Vegetarisch).
 - Fleischmix nach Anteilen (Bratwurst 35, Nacken 30, Hähnchen 20, Rumpsteak 15, Bauch 15), normalisiert auf die gewählten Artikel.
-- Stückzahl = gerundet (Gewicht / Stückgewicht), mindestens 1.
+- Stückzahl = gerundet (Gewicht / Stückgewicht), mindestens 1. **Nie zu wenig (22.10.2026):** liegt die Summe danach unter dem Bedarf, bekommt der Artikel mit der größten Lücke ein Stück dazu, bis der Bedarf gedeckt ist (Fleisch und Vegetarisch getrennt). Beispiel 3 Fleischesser: 3 Bratwurst, 2 Nacken, 1 Hähnchen statt 650 g.
+- Gäste: drei getrennte Zahlen „Mit Fleisch“, „Vegetarisch“ (beide Erwachsene) und „Kinder“; jeder Gast zählt einmal (statt „davon Vegetarier“).
+- Getränke (optional, Schritt 4): pro Person bei Party Wasser 750 ml / Kind 500, Softdrinks 500 / 750, Bier 1,5 l, Wein 375 ml; alkoholfrei teilen sich die Gruppe, Bier+Wein je 2/3; Faktor Feierabend 0,6, Ganztags 1,5; Flaschen aufgerundet. Preise €/l ohne Pfand: Wasser 0,40, Softdrinks 1,00, Bier 1,80, Wein 6.
+- Kosten pro Person = (Grillgut + Getränke) ÷ alle Gäste. Drucken/PDF: Druckansicht nur mit dem Zettel.
 - Beilagen: 1,5 Brötchen/Erw., 1/Kind, Salat 150 g p. P., Saucen 50 ml p. P.
-- Preise sind Richtwerte in €/kg (siehe `public/assets/js/calc.js`).
+- Preise sind Richtwerte in €/kg zwischen Discounter und Theke (ALDI SÜD, Netto, Knuspr, Online-Metzger/Fischhändler, Stand Okt. 2026; siehe `public/assets/js/calc.js`).
 
 **Entscheidungen (21.10.2026):** Bratwurst bleibt 100 g. Basis 250 g statt 300 g pro Erwachsenem. Kinder bekommen Bratwurst und Hähnchen.
 

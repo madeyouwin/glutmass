@@ -10,9 +10,9 @@ const derived = { "rule.vegGrams": DEFAULTS.rule.adult * DEFAULTS.rule.vegShare 
 function lookup(path) {
   if (path in derived) return derived[path];
   const [head, ...rest] = path.split(".");
-  if (head === "items") {
+  if (head === "items" || head === "drinks") {
     const [id, field] = rest;
-    return DEFAULTS.items.find((i) => i.id === id)?.[field];
+    return DEFAULTS[head].find((i) => i.id === id)?.[field];
   }
   return rest.reduce((o, k) => o?.[k], DEFAULTS[head]);
 }

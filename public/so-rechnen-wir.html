@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<link rel="stylesheet" href="/assets/css/glutmass.css?v=11">
+<link rel="stylesheet" href="/assets/css/glutmass.css?v=14">
 </head>
 <body>
 <a class="skip" href="#inhalt">Zum Inhalt springen</a>
@@ -51,7 +51,7 @@
     <tr><th scope="row">Vegetarier</th><td class="num"><span data-wert="base.vegP">250</span> g</td><td>Grillkäse und Gemüsespieß je zur Hälfte</td></tr>
   </tbody>
 </table></div>
-<p>Sind Bratwurst oder Hähnchen nicht ausgewählt, bekommen die Kinder das, was gewählt ist.</p>
+<p>Jeder Gast zählt einmal: Erwachsene mit Fleisch, vegetarische Erwachsene und Kinder trägst du getrennt ein. Jugendliche ab 13 zählen als Erwachsene. Sind Bratwurst oder Hähnchen nicht ausgewählt, bekommen die Kinder das, was gewählt ist.</p>
 
 <h2>2. Faktoren</h2>
 <p>Die Grundmenge wird mit drei Faktoren multipliziert. Bei Kindern zählen nur Hunger und Anlass.</p>
@@ -68,28 +68,64 @@
 <h2>3. Vom Gewicht zum Stück</h2>
 <p>Die Fleischmenge wird nach Anteilen auf die Artikel verteilt, die du auswählst. Wählst du nur einen Teil, werden die Anteile auf diese Artikel hochgerechnet.</p>
 <p class="formula">Stückzahl = Gewicht ÷ Stückgewicht, gerundet, mindestens 1</p>
+<p><strong>Nie zu wenig:</strong> Liegt die Summe nach dem Runden unter der berechneten Menge, bekommt der Artikel mit der größten Lücke ein Stück dazu – so lange, bis die Menge erreicht ist. Beispiel: 3 Erwachsene mit Fleisch brauchen 750 g. Normal gerundet wären es 3 Bratwürste, 1 Nackensteak und 1 Hähnchenspieß, also nur 650 g. GLUTMASS macht daraus 2 Nackensteaks, zusammen 850 g. Das gilt für Fleisch und Vegetarisches getrennt.</p>
 <div class="tw" tabindex="0" role="region" aria-label="Tabelle 3. Vom Gewicht zum Stück"><table>
   <thead><tr><th scope="col">Artikel</th><th scope="col" class="num">Stückgewicht</th><th scope="col" class="num">Anteil</th><th scope="col" class="num">Richtpreis</th></tr></thead>
   <tbody>
+    <tr><th scope="rowgroup" colspan="4" class="grp">Schwein & Geflügel</th></tr>
     <tr><th scope="row">Bratwurst</th><td class="num"><span data-wert="items.wurst.piece">100</span> g</td><td class="num"><span data-wert="items.wurst.share">35</span></td><td class="num"><span data-wert="items.wurst.price">9</span> €/kg</td></tr>
     <tr><th scope="row">Nackensteak</th><td class="num"><span data-wert="items.nacken.piece">200</span> g</td><td class="num"><span data-wert="items.nacken.share">30</span></td><td class="num"><span data-wert="items.nacken.price">10</span> €/kg</td></tr>
     <tr><th scope="row">Hähnchenspieß</th><td class="num"><span data-wert="items.haehnchen.piece">150</span> g</td><td class="num"><span data-wert="items.haehnchen.share">20</span></td><td class="num"><span data-wert="items.haehnchen.price">14</span> €/kg</td></tr>
-    <tr><th scope="row">Rumpsteak</th><td class="num"><span data-wert="items.rumpsteak.piece">250</span> g</td><td class="num"><span data-wert="items.rumpsteak.share">15</span></td><td class="num"><span data-wert="items.rumpsteak.price">29</span> €/kg</td></tr>
     <tr><th scope="row">Bauchscheiben</th><td class="num"><span data-wert="items.bauch.piece">120</span> g</td><td class="num"><span data-wert="items.bauch.share">15</span></td><td class="num"><span data-wert="items.bauch.price">9</span> €/kg</td></tr>
+    <tr><th scope="rowgroup" colspan="4" class="grp">Rind</th></tr>
+    <tr><th scope="row">Rumpsteak</th><td class="num"><span data-wert="items.rumpsteak.piece">250</span> g</td><td class="num"><span data-wert="items.rumpsteak.share">15</span></td><td class="num"><span data-wert="items.rumpsteak.price">29</span> €/kg</td></tr>
+    <tr><th scope="row">Hüftsteak</th><td class="num"><span data-wert="items.huefte.piece">200</span> g</td><td class="num"><span data-wert="items.huefte.share">15</span></td><td class="num"><span data-wert="items.huefte.price">25</span> €/kg</td></tr>
+    <tr><th scope="row">Entrecôte</th><td class="num"><span data-wert="items.entrecote.piece">300</span> g</td><td class="num"><span data-wert="items.entrecote.share">10</span></td><td class="num"><span data-wert="items.entrecote.price">35</span> €/kg</td></tr>
+    <tr><th scope="row">Burger-Patty</th><td class="num"><span data-wert="items.patty.piece">150</span> g</td><td class="num"><span data-wert="items.patty.share">25</span></td><td class="num"><span data-wert="items.patty.price">15</span> €/kg</td></tr>
+    <tr><th scope="rowgroup" colspan="4" class="grp">Lamm</th></tr>
+    <tr><th scope="row">Lammkotelett</th><td class="num"><span data-wert="items.lammkotelett.piece">80</span> g</td><td class="num"><span data-wert="items.lammkotelett.share">15</span></td><td class="num"><span data-wert="items.lammkotelett.price">28</span> €/kg</td></tr>
+    <tr><th scope="row">Merguez</th><td class="num"><span data-wert="items.merguez.piece">70</span> g</td><td class="num"><span data-wert="items.merguez.share">15</span></td><td class="num"><span data-wert="items.merguez.price">22</span> €/kg</td></tr>
+    <tr><th scope="rowgroup" colspan="4" class="grp">Fisch</th></tr>
+    <tr><th scope="row">Lachsfilet</th><td class="num"><span data-wert="items.lachs.piece">150</span> g</td><td class="num"><span data-wert="items.lachs.share">15</span></td><td class="num"><span data-wert="items.lachs.price">22</span> €/kg</td></tr>
+    <tr><th scope="row">Garnelenspieß</th><td class="num"><span data-wert="items.garnelen.piece">100</span> g</td><td class="num"><span data-wert="items.garnelen.share">10</span></td><td class="num"><span data-wert="items.garnelen.price">32</span> €/kg</td></tr>
+    <tr><th scope="row">Forelle</th><td class="num"><span data-wert="items.forelle.piece">300</span> g</td><td class="num"><span data-wert="items.forelle.share">15</span></td><td class="num"><span data-wert="items.forelle.price">15</span> €/kg</td></tr>
+    <tr><th scope="rowgroup" colspan="4" class="grp">Vegetarisch</th></tr>
     <tr><th scope="row">Grillkäse</th><td class="num"><span data-wert="items.grillkaese.piece">100</span> g</td><td class="num"><span data-wert="items.grillkaese.share">50</span></td><td class="num"><span data-wert="items.grillkaese.price">17</span> €/kg</td></tr>
     <tr><th scope="row">Gemüsespieß</th><td class="num"><span data-wert="items.gemuese.piece">150</span> g</td><td class="num"><span data-wert="items.gemuese.share">50</span></td><td class="num"><span data-wert="items.gemuese.price">6</span> €/kg</td></tr>
   </tbody>
 </table></div>
-<p>Die Preise sind grobe Richtwerte für den Einkauf an der Theke. Je nach Region, Qualität und Angebot zahlst du mehr oder weniger.</p>
+<p>Die Anteile gelten innerhalb deiner Auswahl: Wählst du Bratwurst (35) und Lachsfilet (15), bekommt die Bratwurst 70 % der Fleischmenge. Fisch zählt dabei wie Fleisch.</p>
+<p>Die Preise sind Richtwerte zwischen Discounter und Theke, Stand Oktober 2026. Grundlage sind Preise bei ALDI SÜD, Netto, Knuspr sowie Online-Metzgereien und Fischhändlern. Je nach Region, Qualität und Angebot zahlst du mehr oder weniger.</p>
 
-<h2>4. Beilagen</h2>
+<h2 id="getraenke">4. Getränke</h2>
+<p>Getränke rechnet GLUTMASS nur, wenn du sie auswählst. Grundlage ist die Menge pro Person bei einer Party mit 4–5 Stunden. Bei „Feierabend“ sind es × <span data-wert="drinkFactor.feierabend">0,6</span>, bei „Ganztags“ × <span data-wert="drinkFactor.ganztags">1,5</span>. Flaschen werden immer aufgerundet.</p>
+<div class="tw" tabindex="0" role="region" aria-label="Tabelle 4. Getränke"><table>
+  <thead><tr><th scope="col">Getränk</th><th scope="col" class="num">Erwachsene</th><th scope="col" class="num">Kinder</th><th scope="col" class="num">Flasche</th><th scope="col" class="num">Richtpreis</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Wasser</th><td class="num"><span data-wert="drinks.wasser.adult">750</span> ml</td><td class="num"><span data-wert="drinks.wasser.kid">500</span> ml</td><td class="num">1,5 l</td><td class="num"><span data-wert="drinks.wasser.price">0,4</span> €/l</td></tr>
+    <tr><th scope="row">Softdrinks &amp; Schorle</th><td class="num"><span data-wert="drinks.softdrinks.adult">500</span> ml</td><td class="num"><span data-wert="drinks.softdrinks.kid">750</span> ml</td><td class="num">1,5 l</td><td class="num"><span data-wert="drinks.softdrinks.price">1</span> €/l</td></tr>
+    <tr><th scope="row">Bier</th><td class="num"><span data-wert="drinks.bier.adult">1500</span> ml</td><td class="num">–</td><td class="num">0,5 l</td><td class="num"><span data-wert="drinks.bier.price">1,8</span> €/l</td></tr>
+    <tr><th scope="row">Wein</th><td class="num"><span data-wert="drinks.wein.adult">375</span> ml</td><td class="num">–</td><td class="num">0,75 l</td><td class="num"><span data-wert="drinks.wein.price">6</span> €/l</td></tr>
+  </tbody>
+</table></div>
+<ul>
+  <li><strong>Alkoholfrei:</strong> Wasser und Softdrinks teilen sich zusammen 1,25 l pro Erwachsenem und Kind. Wählst du nur eins davon, bekommt es die ganze Menge.</li>
+  <li><strong>Bier und Wein:</strong> Wählst du beides, gibt es von jedem zwei Drittel. Kinder bekommen keinen Alkohol.</li>
+  <li>Preise ohne Pfand, zwischen Discounter-Eigenmarke und Markenware (ALDI SÜD, Netto, Knuspr, Stand Oktober 2026).</li>
+</ul>
+
+<h2 id="kosten">5. Kosten pro Person</h2>
+<p class="formula">Kosten pro Person = (Grillgut + Getränke) ÷ alle Gäste</p>
+<p>Brötchen, Salat und Saucen sind nicht eingerechnet, weil sie stark davon abhängen, ob Gäste etwas mitbringen.</p>
+
+<h2>6. Beilagen</h2>
 <ul>
   <li><span data-wert="base.bread">1,5</span> Brötchen pro Erwachsenem, <span data-wert="base.breadKid">1</span> pro Kind (aufgerundet)</li>
   <li><span data-wert="base.salad">150</span> g Salat pro Person, auf 100 g gerundet – bei „wenig Beilagen“ × <span data-wert="saladFactor.wenig">0,7</span>, bei „viel“ × <span data-wert="saladFactor.viel">1,35</span></li>
   <li><span data-wert="base.sauce">50</span> ml Saucen und Dips pro Person</li>
 </ul>
 
-<h2 id="vergleich">5. Der Vergleich: „weniger eingekauft“</h2>
+<h2 id="vergleich">7. Der Vergleich: „weniger eingekauft“</h2>
 <p>Viele planen nach der Faustregel „400 g Fleisch pro Person“. Wir vergleichen deine Liste mit dieser Faustregel:</p>
 <ul>
   <li><span data-wert="rule.adult">400</span> g pro Erwachsenem mit Fleisch</li>
@@ -100,7 +136,7 @@
 <p>Gezählt wird das tatsächliche Gewicht nach dem Runden auf ganze Stücke. Liegt der Unterschied unter 100 g oder deine Liste über der Faustregel, zeigen wir keinen Unterschied an. Der Euro-Betrag ist der Unterschied in Kilo mal dem Durchschnittspreis deiner Liste.</p>
 <p class="note">Was wir <strong>nicht</strong> behaupten: Wir rechnen keine CO₂-Werte und keine Umweltwirkung aus. Wir wissen nicht, was du am Ende wirklich kaufst oder wegwirfst. Die Zahl sagt nur, wie viel weniger auf deiner Liste steht als nach der Faustregel.</p>
 
-<h2 id="zaehler">6. Der gemeinsame Zähler</h2>
+<h2 id="zaehler">8. Der gemeinsame Zähler</h2>
 <p>Wenn du deine Liste kopierst oder per WhatsApp teilst, schickt der Rechner genau eine Zahl an unseren Server: die Gramm „weniger eingekauft“ dieser Liste. Der Server addiert sie zu einer Gesamtsumme und zählt die Listen mit.</p>
 <ul>
   <li>Keine Personendaten, keine IP-Adresse, keine Gästezahlen, keine Cookies.</li>

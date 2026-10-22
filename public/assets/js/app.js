@@ -1,8 +1,10 @@
 // GLUTMASS Oberflaeche: liest Eingaben, ruft calc.js, zeichnet den Theken-Zettel.
 import {
-  MAX_GUESTS, calculate, sanitizeConfig, cloneDefaults, isDefaultConfig,
-  fmtKg, fmtEur, sideAmount, shareText,
-} from "./calc.js?v=1";
+  MAX_GUESTS, calculate, sanitizeConfig, cloneDefaults, isDefaultConfig, DEFAULTS,
+  fmtKg, fmtEur, fmtEurCent, sideAmount, shareText,
+} from "./calc.js?v=2";
+
+const GROUPS = [["schwein", "Schwein & Geflügel"], ["rind", "Rind"], ["lamm", "Lamm"], ["fisch", "Fisch"], ["veg", "Vegetarisch"]];
 
 
 const CFG_KEY = "glutmass-annahmen";      // localStorage, nur wenn eigene Annahmen gesetzt sind
@@ -27,6 +29,14 @@ const LEFTOVERS = {
   bauch: "Klein schneiden und mit Bratkartoffeln oder Bohnen anbraten.",
   grillkaese: "Gewürfelt in den Salat oder mit Gemüse in die Pfanne.",
   gemuese: "Kalt in den Nudelsalat oder als Ofengemüse aufwärmen.",
+  huefte: "Dünn aufschneiden – kalt aufs Brot oder in den Salat.",
+  entrecote: "Hauchdünn aufschneiden und kurz in der Pfanne erwärmen, z. B. für Wraps.",
+  patty: "Zerbröseln und als Hackfleisch für Nudelsauce oder Chili nutzen.",
+  lammkotelett: "Fleisch vom Knochen lösen, mit Joghurt-Dip ins Fladenbrot.",
+  merguez: "In Scheiben in eine Tomaten-Paprika-Pfanne oder zu Couscous.",
+  lachs: "Kalt zerpflücken für Lachs-Aufstrich, Salat oder Nudeln.",
+  garnelen: "Kalt in den Salat oder kurz in Knoblauchöl schwenken.",
+  forelle: "Filets lösen und mit Frischkäse und Meerrettich zu Aufstrich verarbeiten.",
 };
 const LEFTOVER_ALL = ["Alles Gegrillte", "Schnell abkühlen lassen, in den Kühlschrank und in 1–2 Tagen essen – oder einfrieren."];
 
@@ -46,7 +56,7 @@ const el = (tag, cls, text) => {
 const store = (kind) => { try { return window[kind]; } catch { return null; } };
 
 let cfg = loadConfig();
-const state = { adults: 0, kids: 0, veg: 0, selected: new Set() }; // alles startet leer
+const state = { adults: 0, kids: 0, veg: 0, selected: new Set(), drinks: new Set() }; // alles startet leer
 let current = null;
 
 function loadConfig() {
@@ -63,35 +73,45 @@ function saveConfig() {
 
 const radio = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
 
-function renderChips() {
-  for (const [box, veg] of [["meatChips", false], ["vegChips", true]]) {
-    const wrap = $(box);
-    wrap.replaceChildren();
-    for (const item of cfg.items.filter((i) => i.veg === veg)) {
-      const input = el("input");
-      input.type = "checkbox";
-      input.id = "c-" + item.id;
-      input.checked = state.selected.has(item.id);
-      input.addEventListener("change", () => {
-        input.checked ? state.selected.add(item.id) : state.selected.delete(item.id);
-        update();
-      });
-      const label = el("label", null, item.name);
-      label.htmlFor = input.id;
-      wrap.append(input, label);
-    }
-  }
+function chip(id, label, checked, onChange) {
+  const input = el("input");
+  input.type = "checkbox";
+  input.id = id;
+  input.checked = checked;
+  input.addEventListener("change", () => { onChange(input.checked); update(); });
+  const lab = el("label", null, label);
+  lab.htmlFor = id;
+  return [input, lab];
 }
+
+function renderChips() {
+  const groups = $("grillGroups");
+  groups.replaceChildren(...GROUPS.map(([key, title]) => {
+    const fs = el("fieldset", "chip-group");
+    fs.append(el("legend", "chips-lab", title));
+    const box = el("div", key === "veg" ? "chips veg" : "chips");
+    for (const item of cfg.items.filter((i) => i.group === key)) {
+      box.append(...chip("c-" + item.id, item.name, state.selected.has(item.id), (on) => (on ? state.selected.add(item.id) : state.selected.delete(item.id))));
+    }
+    fs.append(box);
+    return fs;
+  }));
+  $("drinkChips").replaceChildren(...DEFAULTS.drinks.flatMap((d) =>
+    chip("d-" + d.id, d.name, state.drinks.has(d.id), (on) => (on ? state.drinks.add(d.id) : state.drinks.delete(d.id)))));
+}
+
+// Erwachsene mit Fleisch und Vegetarier sind getrennte Zahlen; zusammen hoechstens MAX_GUESTS Erwachsene.
+const maxFor = (k) => (k === "adults" ? MAX_GUESTS - state.veg : k === "veg" ? MAX_GUESTS - state.adults : MAX_GUESTS);
 
 function renderSteppers() {
   for (const k of ["adults", "kids", "veg"]) {
     const inp = $(k);
-    inp.max = k === "veg" ? state.adults : MAX_GUESTS;
+    inp.max = maxFor(k);
     if (document.activeElement !== inp || inp.value !== "") inp.value = state[k];
   }
   document.querySelectorAll("[data-step]").forEach((btn) => {
     const k = btn.dataset.step, d = +btn.dataset.d;
-    const max = k === "veg" ? state.adults : MAX_GUESTS;
+    const max = maxFor(k);
     btn.disabled = d < 0 ? state[k] <= 0 : state[k] >= max;
   });
 }
@@ -106,15 +126,15 @@ function itemRow(count, cls, title, note, weight) {
 
 function update() {
   current = calculate({
-    adults: state.adults, kids: state.kids, veg: state.veg,
+    adults: state.adults + state.veg, kids: state.kids, veg: state.veg,
     hunger: radio("hunger"), anlass: radio("anlass"), beilagen: radio("beilagen"),
-    selected: [...state.selected],
+    selected: [...state.selected], drinks: [...state.drinks],
   }, cfg);
   const r = current, g = r.guests;
 
   $("slipTitle").textContent = g.total ? `Grillparty für ${g.total}` : "Wer kommt?";
   $("guestLine").textContent = g.total
-    ? `${g.adults} Erwachsene${g.veg ? ` (davon ${g.veg} vegetarisch)` : ""} · ${g.kids} ${g.kids === 1 ? "Kind" : "Kinder"}`
+    ? [g.meatEaters ? `${g.meatEaters} mit Fleisch` : "", g.veg ? `${g.veg} vegetarisch` : "", g.kids ? `${g.kids} ${g.kids === 1 ? "Kind" : "Kinder"}` : ""].filter(Boolean).join(" · ")
     : "Trag oben ein, wer kommt.";
 
   const list = $("items");
@@ -124,8 +144,16 @@ function update() {
     ...r.sides.map((s) => s.count != null
       ? itemRow(s.count, "side", s.name, s.note, "")
       : itemRow("", "side", `${sideAmount(s)} ${s.name}`, s.note, "")),
+    ...(r.drinks.length ? [el("li", "sep", "Getränke")] : []),
+    ...r.drinks.map((d) => itemRow(d.count, "drink", d.name, d.note, "")),
   );
-  $("price").textContent = r.grillGrams ? "≈ " + fmtEur(r.price) : "";
+  const sum = r.price + r.drinkPrice;
+  $("price").textContent = sum ? "≈ " + fmtEur(sum) : "";
+  $("priceNote").replaceChildren(
+    document.createTextNode(r.drinkPrice && r.price ? `Grillgut ≈ ${fmtEur(r.price)} · Getränke ≈ ${fmtEur(r.drinkPrice)}` : r.drinkPrice ? "Getränke, Richtpreis ohne Pfand" : "Grillgut, Richtpreis"),
+    el("br"), document.createTextNode("Theke und Markt können abweichen"));
+  $("perPerson").hidden = !(sum && g.total);
+  $("perPerson").textContent = sum && g.total ? `≈ ${fmtEurCent(r.perPerson)} pro Person` : "";
 
   renderWaste(r);
   renderLeftovers(r);
@@ -133,6 +161,7 @@ function update() {
   $("waBtn").href = g.total ? "https://wa.me/?text=" + encodeURIComponent(shareText(r)) : "#liste";
   $("waBtn").setAttribute("aria-disabled", String(!g.total));
   $("copyBtn").setAttribute("aria-disabled", String(!g.total));
+  $("printBtn").setAttribute("aria-disabled", String(!g.total));
   $("jump").hidden = !g.total;
   $("jump").textContent = g.total ? `Zur Einkaufsliste für ${g.total} ↓` : "";
   $("summary").textContent = g.total ? `Liste aktualisiert: ${r.lines.length} Grillartikel für ${g.total} Gäste.` : "";
@@ -270,16 +299,14 @@ function renderConfig() {
 // --- Start -----------------------------------------------------------------
 document.querySelectorAll("[data-step]").forEach((btn) => btn.addEventListener("click", () => {
   const k = btn.dataset.step;
-  state[k] = Math.max(0, Math.min(MAX_GUESTS, state[k] + Number(btn.dataset.d)));
-  state.veg = Math.min(state.veg, state.adults);
+  state[k] = Math.max(0, Math.min(maxFor(k), state[k] + Number(btn.dataset.d)));
   update();
 }));
 document.querySelectorAll("input.count").forEach((inp) => {
   inp.addEventListener("input", () => {
     if (inp.value === "") return;
-    const max = inp.id === "veg" ? state.adults : MAX_GUESTS;
+    const max = maxFor(inp.id);
     state[inp.id] = Math.max(0, Math.min(max, Math.floor(Number(inp.value) || 0)));
-    state.veg = Math.min(state.veg, state.adults);
     update();
   });
   inp.addEventListener("blur", () => { inp.value = state[inp.id]; });
@@ -295,6 +322,10 @@ $("copyBtn").addEventListener("click", async () => {
   } else {
     toast("toast", "Kopieren ging nicht – bitte per WhatsApp teilen.");
   }
+});
+$("printBtn").addEventListener("click", () => {
+  if (!current?.guests.total) return toast("toast", "Erst Gäste eintragen.");
+  window.print();
 });
 $("waBtn").addEventListener("click", (e) => {
   if (!current?.guests.total) { e.preventDefault(); return toast("toast", "Erst Gäste eintragen."); }

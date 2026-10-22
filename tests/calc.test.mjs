@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { calculate, sanitizeConfig, isDefaultConfig, cloneDefaults, shareText, fmtKg } from "../public/assets/js/calc.js";
+import { calculate, sanitizeConfig, isDefaultConfig, cloneDefaults, shareText, fmtKg, drinkLines, DEFAULTS } from "../public/assets/js/calc.js";
 
 const party = (over = {}) => ({ adults: 8, kids: 4, veg: 2, hunger: "normal", anlass: "party", beilagen: "normal", ...over });
 const counts = (r) => Object.fromEntries(r.lines.map((l) => [l.id, l.count]));
@@ -26,7 +26,8 @@ test("Kinder ohne Hähnchen bekommen nur Bratwurst", () => {
 
 test("Kinder ohne Bratwurst/Hähnchen bekommen das erste gewählte Fleisch", () => {
   const r = calculate(party({ adults: 0, kids: 2, veg: 0, selected: ["nacken"] }));
-  assert.deepEqual(counts(r), { nacken: 1 });
+  // 240 g Bedarf: 1 Steak (200 g) wäre zu wenig, also 2
+  assert.deepEqual(counts(r), { nacken: 2 });
 });
 
 test("Ohne Fleisch-Auswahl gibt es Warnungen statt stiller Fehler", () => {
@@ -85,4 +86,48 @@ test("Teilen-Text enthält Stückzahlen und Vergleich", () => {
   assert.match(txt, /1,0 kg weniger eingekauft/);
   assert.match(txt, /glutmass\.de$/);
   assert.equal(fmtKg(950), "1,0 kg");
+});
+
+test("Rundung: nie weniger als der berechnete Bedarf (3 Fleischesser)", () => {
+  const r = calculate({ adults: 3, kids: 0, veg: 0, hunger: "normal", anlass: "party", beilagen: "normal", selected: ["wurst", "nacken", "haehnchen"] });
+  // Bedarf 750 g: kaufmännisch gerundet wären es 3 + 1 + 1 = 650 g, mit Garantie 2 Nackensteaks
+  assert.deepEqual(counts(r), { wurst: 3, nacken: 2, haehnchen: 1 });
+  assert.ok(r.grillGrams >= 750);
+});
+
+test("Rundung garantiert den Bedarf für viele Gästezahlen", () => {
+  for (let a = 1; a <= 40; a++) for (const sel of [["wurst", "nacken"], ["entrecote", "lachs"], ["lammkotelett", "patty", "forelle"]]) {
+    const r = calculate({ adults: a, kids: 0, veg: 0, hunger: "normal", anlass: "party", beilagen: "normal", selected: sel });
+    assert.ok(r.grillGrams >= a * 250 - 0.5, `${a} Erwachsene ${sel}`);
+    const maxPiece = Math.max(...DEFAULTS.items.filter((i) => sel.includes(i.id)).map((i) => i.piece));
+    assert.ok(r.grillGrams < a * 250 + sel.length * maxPiece, "höchstens wenige Stücke über Bedarf");
+  }
+});
+
+test("Neue Artikel haben eine Gruppe und gültige Werte", () => {
+  assert.equal(DEFAULTS.items.length, 15);
+  for (const i of DEFAULTS.items) {
+    assert.ok(["schwein", "rind", "lamm", "fisch", "veg"].includes(i.group), i.id);
+    assert.ok(i.piece >= 10 && i.price > 0 && i.share > 0, i.id);
+  }
+});
+
+test("Getränke: Flaschen aufgerundet, Gruppe teilt sich die Menge", () => {
+  // 10 Erwachsene, Party: nur Wasser gewählt → ganze alkoholfreie Menge (1,25 l p. P.) = 12,5 l → 9 Flaschen à 1,5 l
+  assert.deepEqual(drinkLines(10, 0, "party", ["wasser"]).map((d) => [d.id, d.count]), [["wasser", 9]]);
+  // Bier allein: 1,5 l p. P. = 30 Flaschen à 0,5 l; Bier + Wein: 1,0 l Bier (20) + 0,25 l Wein (4 Flaschen)
+  assert.deepEqual(drinkLines(10, 0, "party", ["bier"]).map((d) => d.count), [30]);
+  assert.deepEqual(drinkLines(10, 0, "party", ["bier", "wein"]).map((d) => [d.id, d.count]), [["bier", 20], ["wein", 4]]);
+  // Kinder bekommen keinen Alkohol
+  assert.deepEqual(drinkLines(0, 5, "party", ["bier", "wein"]), []);
+  // Feierabend kürzer → weniger
+  assert.ok(drinkLines(10, 0, "feierabend", ["bier"])[0].count < 30);
+});
+
+test("Kosten pro Person = (Grillgut + Getränke) / Gäste", () => {
+  const r = calculate({ ...party(), drinks: ["wasser"] });
+  assert.ok(r.drinkPrice > 0);
+  assert.equal(Math.round(r.perPerson * 100), Math.round(((r.price + r.drinkPrice) / 12) * 100));
+  assert.match(shareText(r), /pro Person/);
+  assert.match(shareText(r), /× Wasser \(à 1,5 l\)/);
 });
